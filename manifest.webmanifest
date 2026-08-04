@@ -1,8 +1,9 @@
 {
+  "id": "./",
   "name": "Kvintsirkelen – akkordhjelper",
   "short_name": "Kvintsirkelen",
-  "description": "Interaktiv kvintsirkel som hjelper deg å finne akkorder som passer sammen.",
-  "start_url": "./index.html",
+  "description": "Interaktiv kvintsirkel med akkorder, akkordrekker og gitargrep.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#17120d",

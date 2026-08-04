@@ -1,10 +1,11 @@
-KVINTSIRKELEN v1.0 – PWA
+KVINTSIRKELEN v1.1 – PWA
 
-Last opp alle filene og mappen til samme GitHub-repository:
-- index.html
-- manifest.webmanifest
-- service-worker.js
-- icons/icon-192.png
-- icons/icon-512.png
+Last opp hele innholdet i denne mappen til roten av GitHub-repositoriet.
 
-Publiser siden med GitHub Pages eller Netlify. En PWA må åpnes via HTTPS for at installasjon og offline-funksjon skal virke.
+Viktig:
+- Behold mappen 'icons'.
+- icon-192.png og icon-512.png skal ligge inne i icons-mappen.
+- index.html, manifest.webmanifest og service-worker.js skal ligge i hovedmappen.
+
+Ny funksjon:
+Trykk på en akkord under «Akkorder i tonearten» for å åpne et gitardiagram.
