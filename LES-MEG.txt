@@ -1,0 +1,10 @@
+KVINTSIRKELEN v1.0 – PWA
+
+Last opp alle filene og mappen til samme GitHub-repository:
+- index.html
+- manifest.webmanifest
+- service-worker.js
+- icons/icon-192.png
+- icons/icon-512.png
+
+Publiser siden med GitHub Pages eller Netlify. En PWA må åpnes via HTTPS for at installasjon og offline-funksjon skal virke.

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#17120d" />
+  <meta name="description" content="Interaktiv kvintsirkel som hjelper deg å finne akkorder som passer sammen." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Kvintsirkelen" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>Kvintsirkelen – akkordhjelper v1.0</title>
+  <style>
+    :root {
+      --bg: #17120d;
+      --panel: #241b13;
+      --panel-2: #2f2419;
+      --text: #fff8ec;
+      --muted: #cdbfa9;
+      --gold: #d8ad58;
+      --gold-soft: rgba(216, 173, 88, 0.18);
+      --accent: #e8c477;
+      --green: #73b58a;
+      --red: #cc6f61;
+      --line: rgba(255,255,255,.10);
+      --shadow: 0 18px 55px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(216,173,88,.11), transparent 30%),
+        linear-gradient(145deg, #17120d 0%, #0f0c09 100%);
+    }
+
+    button, select { font: inherit; }
+    button { color: inherit; }
+
+    .app {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.55rem, 4vw, 2.35rem);
+      letter-spacing: -.03em;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .header-actions { display:flex; align-items:center; gap:9px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .install-button {
+      display: none;
+      border: 1px solid rgba(216,173,88,.45);
+      background: var(--gold);
+      color: #1d150c;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .install-button.show { display:inline-flex; }
+
+    .version {
+      flex: 0 0 auto;
+      border: 1px solid rgba(216,173,88,.35);
+      background: var(--gold-soft);
+      color: var(--accent);
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .82rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(330px, 1fr) minmax(330px, .9fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(47,36,25,.96), rgba(31,24,17,.96));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .circle-card { padding: 20px; }
+
+    .mode-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .segmented {
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(0,0,0,.22);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 4px;
+    }
+
+    .segmented button {
+      border: 0;
+      background: transparent;
+      padding: 9px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
+    .segmented button.active {
+      background: var(--gold);
+      color: #1d150c;
+      box-shadow: 0 6px 18px rgba(216,173,88,.22);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: .82rem;
+      text-align: right;
+    }
+
+    .circle-wrap {
+      position: relative;
+      width: min(100%, 590px);
+      aspect-ratio: 1;
+      margin: 0 auto;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, #1d160f 0 23%, transparent 23.5%),
+        radial-gradient(circle, rgba(216,173,88,.10) 0 49%, transparent 49.5%),
+        radial-gradient(circle, rgba(255,255,255,.04) 0 74%, transparent 74.5%);
+      border: 1px solid rgba(216,173,88,.22);
+    }
+
+    .key-button {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(255,255,255,.12);
+      background: #33271b;
+      color: var(--text);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
+      box-shadow: 0 7px 20px rgba(0,0,0,.22);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .key-button.major {
+      width: 58px;
+      height: 58px;
+      font-size: 1rem;
+      font-weight: 850;
+    }
+
+    .key-button.minor {
+      width: 48px;
+      height: 48px;
+      background: #251d15;
+      font-size: .82rem;
+      color: #e7dac6;
+      font-weight: 750;
+    }
+
+    .key-button:hover { border-color: rgba(216,173,88,.55); }
+    .key-button.selected {
+      background: var(--gold);
+      color: #1a130b;
+      border-color: #f6d994;
+      box-shadow: 0 0 0 6px rgba(216,173,88,.16), 0 10px 28px rgba(0,0,0,.32);
+      transform: translate(-50%, -50%) scale(1.08);
+      z-index: 3;
+    }
+
+    .key-button.related {
+      background: #3b523d;
+      border-color: rgba(115,181,138,.7);
+    }
+
+    .key-button.related-minor {
+      background: #483746;
+      border-color: rgba(211,155,204,.65);
+    }
+
+    .center-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 35%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 16px;
+      border: 1px solid rgba(216,173,88,.28);
+      background: radial-gradient(circle at 35% 25%, #3a2b1c, #1b140d 72%);
+      box-shadow: inset 0 0 30px rgba(0,0,0,.38), 0 10px 30px rgba(0,0,0,.3);
+      pointer-events: none;
+    }
+
+    .center-label small { color: var(--muted); display: block; font-size: .72rem; }
+    .center-label strong { display: block; font-size: clamp(1.3rem, 5vw, 2.25rem); margin: 2px 0; }
+    .center-label span { color: var(--accent); font-size: .78rem; }
+
+    .info-card { overflow: hidden; }
+
+    .selected-head {
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(216,173,88,.16), transparent 65%);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .selected-head h2 {
+      margin: 7px 0 4px;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1;
+    }
+
+    .selected-head p { margin: 0; color: var(--muted); }
+
+    .section { padding: 20px 22px; border-bottom: 1px solid var(--line); }
+    .section:last-child { border-bottom: 0; }
+    .section h3 { margin: 0 0 12px; font-size: 1rem; }
+
+    .chord-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .chord {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.035);
+      border-radius: 14px;
+      padding: 12px 6px;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .chord strong { display: block; font-size: 1.12rem; }
+    .chord small { color: var(--muted); font-size: .69rem; }
+    .chord.primary { border-color: rgba(216,173,88,.5); background: var(--gold-soft); }
+    .chord.secondary { border-color: rgba(115,181,138,.38); background: rgba(115,181,138,.10); }
+    .chord.dim { opacity: .72; }
+
+    .progressions { display: grid; gap: 9px; }
+
+    .progression {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 13px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid var(--line);
+    }
+
+    .progression .name { color: var(--muted); font-size: .76rem; margin-bottom: 2px; }
+    .progression .notes { font-weight: 800; letter-spacing: .02em; }
+    .progression .degrees { color: var(--accent); font-size: .72rem; white-space: nowrap; }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .76rem;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+    .dot.gold { background: var(--gold); }
+    .dot.green { background: #3b523d; border: 1px solid var(--green); }
+    .dot.purple { background: #483746; border: 1px solid #d39bcc; }
+
+    .footer-note {
+      margin-top: 14px;
+      color: #9f927f;
+      text-align: center;
+      font-size: .76rem;
+    }
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+      .info-card { order: 2; }
+      .circle-card { order: 1; }
+    }
+
+    @media (max-width: 540px) {
+      .app { padding: 14px; }
+      .topbar { align-items: flex-start; }
+      .brand p { font-size: .84rem; }
+      .circle-card { padding: 13px; border-radius: 20px; }
+      .mode-row { align-items: flex-start; }
+      .hint { max-width: 120px; }
+      .key-button.major { width: 46px; height: 46px; font-size: .86rem; }
+      .key-button.minor { width: 39px; height: 39px; font-size: .69rem; }
+      .center-label { width: 37%; padding: 9px; }
+      .center-label span { font-size: .66rem; }
+      .chord-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .legend { grid-template-columns: 1fr; }
+      .section, .selected-head { padding-left: 17px; padding-right: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>Kvintsirkelen</h1>
+        <p>Finn akkorder som passer sammen</p>
+      </div>
+      <div class="header-actions">
+        <button id="installButton" class="install-button" type="button">Installer app</button>
+        <div class="version">v1.0 PWA</div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="card circle-card">
+        <div class="mode-row">
+          <div class="segmented" aria-label="Velg tonearttype">
+            <button id="majorMode" class="active" type="button">Dur</button>
+            <button id="minorMode" type="button">Moll</button>
+          </div>
+          <div class="hint">Trykk på en tone i sirkelen</div>
+        </div>
+
+        <div id="circle" class="circle-wrap" aria-label="Interaktiv kvintsirkel">
+          <div class="center-label">
+            <div>
+              <small>Valgt toneart</small>
+              <strong id="centerKey">G</strong>
+              <span id="centerMode">G-dur</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="legend" style="margin-top:16px">
+          <div class="legend-item"><span class="dot gold"></span>Valgt toneart</div>
+          <div class="legend-item"><span class="dot green"></span>Nære durakkorder</div>
+          <div class="legend-item"><span class="dot purple"></span>Beslektede mollakkorder</div>
+        </div>
+      </section>
+
+      <section class="card info-card">
+        <div class="selected-head">
+          <div class="eyebrow">Toneart</div>
+          <h2 id="titleKey">G-dur</h2>
+          <p id="subtitle">Én kryss: F♯</p>
+        </div>
+
+        <div class="section">
+          <h3>Akkorder i tonearten</h3>
+          <div id="chordGrid" class="chord-grid"></div>
+        </div>
+
+        <div class="section">
+          <h3>Vanlige akkordrekker</h3>
+          <div id="progressions" class="progressions"></div>
+        </div>
+
+        <div class="section">
+          <h3>Tips</h3>
+          <p id="tipText" style="margin:0;color:var(--muted);line-height:1.55;font-size:.9rem"></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-note">Trykk på en dur- eller molltone for å utforske nye akkordmuligheter.</div>
+  </main>
+
+  <script>
+    const majorCircle = ["C", "G", "D", "A", "E", "B", "F♯", "D♭", "A♭", "E♭", "B♭", "F"];
+    const minorCircle = ["Am", "Em", "Bm", "F♯m", "C♯m", "G♯m", "D♯m", "B♭m", "Fm", "Cm", "Gm", "Dm"];
+
+    const pitchNames = {
+      sharp: ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"],
+      flat:  ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"]
+    };
+
+    const pitchMap = {
+      "C":0, "B♯":0, "C♯":1, "D♭":1, "D":2, "D♯":3, "E♭":3,
+      "E":4, "F♭":4, "F":5, "E♯":5, "F♯":6, "G♭":6, "G":7,
+      "G♯":8, "A♭":8, "A":9, "A♯":10, "B♭":10, "B":11, "C♭":11
+    };
+
+    const signatures = {
+      "C": "Ingen kryss eller b-er",
+      "G": "Én kryss: F♯",
+      "D": "To kryss: F♯ og C♯",
+      "A": "Tre kryss: F♯, C♯ og G♯",
+      "E": "Fire kryss: F♯, C♯, G♯ og D♯",
+      "B": "Fem kryss",
+      "F♯": "Seks kryss",
+      "D♭": "Fem b-er",
+      "A♭": "Fire b-er",
+      "E♭": "Tre b-er: B♭, E♭ og A♭",
+      "B♭": "To b-er: B♭ og E♭",
+      "F": "Én b: B♭"
+    };
+
+    const degreeNamesMajor = ["I · tonika", "ii", "iii", "IV · subdominant", "V · dominant", "vi · parallell", "vii°"];
+    const degreeNamesMinor = ["i · tonika", "ii°", "III", "iv · subdominant", "v · dominant", "VI", "VII"];
+
+    const majorIntervals = [0, 2, 4, 5, 7, 9, 11];
+    const majorQualities = ["", "m", "m", "", "", "m", "dim"];
+    const minorIntervals = [0, 2, 3, 5, 7, 8, 10];
+    const minorQualities = ["m", "dim", "", "m", "m", "", ""];
+
+    const progressionSets = {
+      major: [
+        { name: "Popklassikeren", degrees: [1,5,6,4], roman: "I–V–vi–IV" },
+        { name: "Rolig og åpen", degrees: [1,6,4,5], roman: "I–vi–IV–V" },
+        { name: "Sterk avslutning", degrees: [1,4,5,1], roman: "I–IV–V–I" },
+        { name: "Folk og vise", degrees: [1,4,1,5], roman: "I–IV–I–V" }
+      ],
+      minor: [
+        { name: "Mørk og drivende", degrees: [1,6,3,7], roman: "i–VI–III–VII" },
+        { name: "Klassisk moll", degrees: [1,4,5,1], roman: "i–iv–v–i" },
+        { name: "Filmaktig", degrees: [1,7,6,7], roman: "i–VII–VI–VII" },
+        { name: "Rolig mollpop", degrees: [1,3,7,6], roman: "i–III–VII–VI" }
+      ]
+    };
+
+    let mode = localStorage.getItem("circleMode") || "major";
+    let selected = localStorage.getItem("circleKey") || "G";
+
+    const circle = document.getElementById("circle");
+    const majorMode = document.getElementById("majorMode");
+    const minorMode = document.getElementById("minorMode");
+
+    function rootOf(chord) {
+      return chord.endsWith("m") ? chord.slice(0, -1) : chord;
+    }
+
+    function useFlats(root) {
+      return root.includes("♭") || ["F", "B♭", "E♭", "A♭", "D♭"].includes(root);
+    }
+
+    function noteAt(root, semitones) {
+      const index = (pitchMap[root] + semitones) % 12;
+      return (useFlats(root) ? pitchNames.flat : pitchNames.sharp)[index];
+    }
+
+    function buildChords(root, type) {
+      const intervals = type === "major" ? majorIntervals : minorIntervals;
+      const qualities = type === "major" ? majorQualities : minorQualities;
+      return intervals.map((interval, i) => noteAt(root, interval) + qualities[i]);
+    }
+
+    function createCircle() {
+      circle.querySelectorAll(".key-button").forEach(el => el.remove());
+      const size = circle.getBoundingClientRect().width;
+      const outerRadius = size * 0.405;
+      const innerRadius = size * 0.285;
+
+      majorCircle.forEach((key, i) => {
+        const angle = (-90 + i * 30) * Math.PI / 180;
+        addKeyButton(key, "major", angle, outerRadius);
+        addKeyButton(minorCircle[i], "minor", angle, innerRadius);
+      });
+      updateHighlights();
+    }
+
+    function addKeyButton(key, type, angle, radius) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `key-button ${type}`;
+      btn.textContent = key;
+      btn.dataset.key = key;
+      btn.dataset.type = type;
+      btn.style.marginLeft = `${Math.cos(angle) * radius}px`;
+      btn.style.marginTop = `${Math.sin(angle) * radius}px`;
+      btn.setAttribute("aria-label", `${key}${type === "major" ? " dur" : " moll"}`);
+      btn.addEventListener("click", () => selectKey(key, type));
+      circle.appendChild(btn);
+    }
+
+    function selectKey(key, type) {
+      mode = type;
+      selected = key;
+      localStorage.setItem("circleMode", mode);
+      localStorage.setItem("circleKey", selected);
+      render();
+    }
+
+    function getRelated() {
+      if (mode === "major") {
+        const i = majorCircle.indexOf(selected);
+        return {
+          major: [majorCircle[(i + 11) % 12], majorCircle[(i + 1) % 12]],
+          minor: [minorCircle[i], minorCircle[(i + 11) % 12], minorCircle[(i + 1) % 12]]
+        };
+      }
+      const i = minorCircle.indexOf(selected);
+      return {
+        major: [majorCircle[i], majorCircle[(i + 11) % 12], majorCircle[(i + 1) % 12]],
+        minor: [minorCircle[(i + 11) % 12], minorCircle[(i + 1) % 12]]
+      };
+    }
+
+    function updateHighlights() {
+      const related = getRelated();
+      document.querySelectorAll(".key-button").forEach(btn => {
+        btn.classList.remove("selected", "related", "related-minor");
+        if (btn.dataset.key === selected && btn.dataset.type === mode) {
+          btn.classList.add("selected");
+        } else if (btn.dataset.type === "major" && related.major.includes(btn.dataset.key)) {
+          btn.classList.add("related");
+        } else if (btn.dataset.type === "minor" && related.minor.includes(btn.dataset.key)) {
+          btn.classList.add("related-minor");
+        }
+      });
+    }
+
+    function renderInfo() {
+      const root = rootOf(selected);
+      const chords = buildChords(root, mode);
+      const displayName = `${root}-${mode === "major" ? "dur" : "moll"}`;
+
+      document.getElementById("centerKey").textContent = selected;
+      document.getElementById("centerMode").textContent = displayName;
+      document.getElementById("titleKey").textContent = displayName;
+      document.getElementById("subtitle").textContent = signatures[root] || "Beslektet toneart";
+
+      const degrees = mode === "major" ? degreeNamesMajor : degreeNamesMinor;
+      const chordGrid = document.getElementById("chordGrid");
+      chordGrid.innerHTML = chords.map((chord, i) => {
+        const cls = [0,3,4].includes(i) ? "primary" : ([1,2,5].includes(i) ? "secondary" : "dim");
+        return `<div class="chord ${cls}"><strong>${chord}</strong><small>${degrees[i]}</small></div>`;
+      }).join("");
+
+      const progressionContainer = document.getElementById("progressions");
+      progressionContainer.innerHTML = progressionSets[mode].map(item => {
+        const notes = item.degrees.map(d => chords[d - 1]).join(" – ");
+        return `<div class="progression"><div><div class="name">${item.name}</div><div class="notes">${notes}</div></div><div class="degrees">${item.roman}</div></div>`;
+      }).join("");
+
+      const tonic = chords[0];
+      const fourth = chords[3];
+      const fifth = chords[4];
+      document.getElementById("tipText").textContent = mode === "major"
+        ? `Begynn gjerne med ${tonic}, ${fourth} og ${fifth}. De er hovedakkordene i tonearten og gir et trygt utgangspunkt. Legg til ${chords[5]} for en mer følelsesladet klang.`
+        : `Begynn gjerne med ${tonic}, ${fourth} og ${fifth}. I mange mollåter brukes også en durvariant av dominantakkorden for å skape sterkere drag tilbake til ${tonic}.`;
+    }
+
+    function render() {
+      majorMode.classList.toggle("active", mode === "major");
+      minorMode.classList.toggle("active", mode === "minor");
+      updateHighlights();
+      renderInfo();
+    }
+
+    majorMode.addEventListener("click", () => {
+      if (mode === "major") return;
+      const i = minorCircle.indexOf(selected);
+      selectKey(i >= 0 ? majorCircle[i] : "C", "major");
+    });
+
+    minorMode.addEventListener("click", () => {
+      if (mode === "minor") return;
+      const i = majorCircle.indexOf(selected);
+      selectKey(i >= 0 ? minorCircle[i] : "Am", "minor");
+    });
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(createCircle, 100);
+    });
+
+    createCircle();
+    render();
+
+    const installButton = document.getElementById("installButton");
+    let deferredInstallPrompt = null;
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      installButton.classList.add("show");
+    });
+
+    installButton.addEventListener("click", async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installButton.classList.remove("show");
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      installButton.classList.remove("show");
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+          console.error("Kunne ikke registrere service worker:", error);
+        });
+      });
+    }
+
+  </script>
+</body>
+</html>
