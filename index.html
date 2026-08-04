@@ -1,847 +1,245 @@
-<!DOCTYPE html>
-<html lang="no">
+<!doctype html>
+<html lang="nb">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#17120d" />
-  <title>Kvintsirkelen – akkordhjelper v1.2</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#17120d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kvintsirkelen">
+  <title>Kvintsirkelen</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <style>
-    :root {
-      --bg: #17120d;
-      --panel: #241b13;
-      --panel-2: #2f2419;
-      --text: #fff8ec;
-      --muted: #cdbfa9;
-      --gold: #d8ad58;
-      --gold-soft: rgba(216, 173, 88, 0.18);
-      --accent: #e8c477;
-      --green: #73b58a;
-      --red: #cc6f61;
-      --line: rgba(255,255,255,.10);
-      --shadow: 0 18px 55px rgba(0,0,0,.35);
+    :root{
+      --bg:#17120d;--panel:#241a12;--panel2:#302218;--text:#fff8ec;--muted:#c9b89f;
+      --gold:#d8ad58;--gold2:#f2d493;--line:rgba(216,173,88,.22);--ok:#87c98a;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 20% 0%, rgba(216,173,88,.11), transparent 30%),
-        linear-gradient(145deg, #17120d 0%, #0f0c09 100%);
-    }
-
-    button, select { font: inherit; }
-    button { color: inherit; }
-
-    .app {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      padding: 22px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(1.55rem, 4vw, 2.35rem);
-      letter-spacing: -.03em;
-    }
-
-    .brand p {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: .95rem;
-    }
-
-    .version {
-      flex: 0 0 auto;
-      border: 1px solid rgba(216,173,88,.35);
-      background: var(--gold-soft);
-      color: var(--accent);
-      padding: 7px 11px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: .82rem;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(330px, 1fr) minmax(330px, .9fr);
-      gap: 18px;
-      align-items: start;
-    }
-
-    .card {
-      background: linear-gradient(180deg, rgba(47,36,25,.96), rgba(31,24,17,.96));
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .circle-card { padding: 20px; }
-
-    .mode-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .segmented {
-      display: inline-grid;
-      grid-template-columns: 1fr 1fr;
-      background: rgba(0,0,0,.22);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 4px;
-    }
-
-    .segmented button {
-      border: 0;
-      background: transparent;
-      padding: 9px 15px;
-      border-radius: 10px;
-      cursor: pointer;
-      color: var(--muted);
-      font-weight: 750;
-    }
-
-    .segmented button.active {
-      background: var(--gold);
-      color: #1d150c;
-      box-shadow: 0 6px 18px rgba(216,173,88,.22);
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: .82rem;
-      text-align: right;
-    }
-
-    .circle-wrap {
-      position: relative;
-      width: min(100%, 590px);
-      aspect-ratio: 1;
-      margin: 0 auto;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle, #1d160f 0 23%, transparent 23.5%),
-        radial-gradient(circle, rgba(216,173,88,.10) 0 49%, transparent 49.5%),
-        radial-gradient(circle, rgba(255,255,255,.04) 0 74%, transparent 74.5%);
-      border: 1px solid rgba(216,173,88,.22);
-    }
-
-    .key-button {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      border: 1px solid rgba(255,255,255,.12);
-      background: #33271b;
-      color: var(--text);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
-      box-shadow: 0 7px 20px rgba(0,0,0,.22);
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .key-button.major {
-      width: 58px;
-      height: 58px;
-      font-size: 1rem;
-      font-weight: 850;
-    }
-
-    .key-button.minor {
-      width: 48px;
-      height: 48px;
-      background: #251d15;
-      font-size: .82rem;
-      color: #e7dac6;
-      font-weight: 750;
-    }
-
-    .key-button:hover { border-color: rgba(216,173,88,.55); }
-    .key-button.selected {
-      background: var(--gold);
-      color: #1a130b;
-      border-color: #f6d994;
-      box-shadow: 0 0 0 6px rgba(216,173,88,.16), 0 10px 28px rgba(0,0,0,.32);
-      transform: translate(-50%, -50%) scale(1.08);
-      z-index: 3;
-    }
-
-    .key-button.related {
-      background: #3b523d;
-      border-color: rgba(115,181,138,.7);
-    }
-
-    .key-button.related-minor {
-      background: #483746;
-      border-color: rgba(211,155,204,.65);
-    }
-
-    .center-label {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 35%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 16px;
-      border: 1px solid rgba(216,173,88,.28);
-      background: radial-gradient(circle at 35% 25%, #3a2b1c, #1b140d 72%);
-      box-shadow: inset 0 0 30px rgba(0,0,0,.38), 0 10px 30px rgba(0,0,0,.3);
-      pointer-events: none;
-    }
-
-    .center-label small { color: var(--muted); display: block; font-size: .72rem; }
-    .center-label strong { display: block; font-size: clamp(1.3rem, 5vw, 2.25rem); margin: 2px 0; }
-    .center-label span { color: var(--accent); font-size: .78rem; }
-
-    .info-card { overflow: hidden; }
-
-    .selected-head {
-      padding: 22px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(135deg, rgba(216,173,88,.16), transparent 65%);
-    }
-
-    .eyebrow {
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: .13em;
-      font-size: .72rem;
-      font-weight: 800;
-    }
-
-    .selected-head h2 {
-      margin: 7px 0 4px;
-      font-size: clamp(2rem, 5vw, 3.25rem);
-      line-height: 1;
-    }
-
-    .selected-head p { margin: 0; color: var(--muted); }
-
-    .section { padding: 20px 22px; border-bottom: 1px solid var(--line); }
-    .section:last-child { border-bottom: 0; }
-    .section h3 { margin: 0 0 12px; font-size: 1rem; }
-
-    .chord-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 9px;
-    }
-
-    .chord {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.035);
-      border-radius: 14px;
-      padding: 12px 6px;
-      text-align: center;
-      min-width: 0;
-    }
-
-    .chord strong { display: block; font-size: 1.12rem; }
-    .chord small { color: var(--muted); font-size: .69rem; }
-    .chord.primary { border-color: rgba(216,173,88,.5); background: var(--gold-soft); }
-    .chord.secondary { border-color: rgba(115,181,138,.38); background: rgba(115,181,138,.10); }
-    .chord.dim { opacity: .72; }
-
-    .progressions { display: grid; gap: 9px; }
-
-    .progression {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px 13px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.035);
-      border: 1px solid var(--line);
-    }
-
-    .progression .name { color: var(--muted); font-size: .76rem; margin-bottom: 2px; }
-    .progression .notes { font-weight: 800; letter-spacing: .02em; }
-    .progression .degrees { color: var(--accent); font-size: .72rem; white-space: nowrap; }
-
-    .legend {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: .76rem;
-    }
-
-    .dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
-    .dot.gold { background: var(--gold); }
-    .dot.green { background: #3b523d; border: 1px solid var(--green); }
-    .dot.purple { background: #483746; border: 1px solid #d39bcc; }
-
-    .footer-note {
-      margin-top: 14px;
-      color: #9f927f;
-      text-align: center;
-      font-size: .76rem;
-    }
-
-    @media (max-width: 860px) {
-      .layout { grid-template-columns: 1fr; }
-      .info-card { order: 2; }
-      .circle-card { order: 1; }
-    }
-
-    @media (max-width: 540px) {
-      .app { padding: 14px; }
-      .topbar { align-items: flex-start; }
-      .brand p { font-size: .84rem; }
-      .circle-card { padding: 13px; border-radius: 20px; }
-      .mode-row { align-items: flex-start; }
-      .hint { max-width: 120px; }
-      .key-button.major { width: 46px; height: 46px; font-size: .86rem; }
-      .key-button.minor { width: 39px; height: 39px; font-size: .69rem; }
-      .center-label { width: 37%; padding: 9px; }
-      .center-label span { font-size: .66rem; }
-      .chord-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
-      .legend { grid-template-columns: 1fr; }
-      .section, .selected-head { padding-left: 17px; padding-right: 17px; }
-    }
-
-    .chord {
-      cursor: pointer;
-      transition: transform .15s ease, border-color .15s ease, background .15s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .chord:hover { transform: translateY(-2px); border-color: rgba(216,173,88,.72); }
-    .chord:focus-visible { outline: 3px solid rgba(232,196,119,.65); outline-offset: 2px; }
-    .chord small.action { display:block; margin-top:5px; color:var(--accent); }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background: rgba(7,5,3,.78);
-      backdrop-filter: blur(5px);
-    }
-    .modal-backdrop.open { display: flex; }
-    .chord-modal {
-      width: min(430px, 100%);
-      max-height: 92vh;
-      overflow: auto;
-      background: linear-gradient(180deg, #302418, #1c150f);
-      border: 1px solid rgba(216,173,88,.34);
-      border-radius: 24px;
-      box-shadow: 0 24px 80px rgba(0,0,0,.58);
-    }
-    .modal-head {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:16px;
-      padding:18px 20px;
-      border-bottom:1px solid var(--line);
-    }
-    .modal-head h2 { margin:0; font-size:1.65rem; }
-    .close-modal {
-      width:42px;
-      height:42px;
-      border-radius:50%;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      cursor:pointer;
-      font-size:1.4rem;
-    }
-    .diagram-area { padding:22px 20px 10px; text-align:center; }
-    .diagram-note { margin:10px 0 0; color:var(--muted); font-size:.84rem; line-height:1.45; }
-    .diagram-help {
-      margin: 14px 20px 20px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.035);
-      color: var(--muted);
-      font-size: .8rem;
-      line-height: 1.5;
-    }
-    .fretboard-svg { width:min(310px, 100%); height:auto; overflow:visible; }
-
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at top,#3a2818 0,#17120d 45%);color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+    button,select{font:inherit}
+    .app{max-width:1100px;margin:auto;padding:18px}
+    header{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:clamp(1.5rem,4vw,2.3rem);margin:0}
+    .sub{color:var(--muted);font-size:.9rem}
+    .install{border:1px solid var(--gold);background:var(--gold);color:#1b140d;padding:11px 15px;
+      border-radius:999px;font-weight:800;cursor:pointer;display:none}
+    .install.show{display:inline-flex}
+    .grid{display:grid;grid-template-columns:minmax(320px,1.1fr) minmax(280px,.9fr);gap:18px}
+    .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+      border-radius:24px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.24)}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    select{background:#1a130e;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+    .circle-wrap{aspect-ratio:1;position:relative;max-width:620px;margin:auto}
+    svg{width:100%;height:100%;display:block}
+    .key{cursor:pointer}
+    .key text{pointer-events:none;font-weight:800}
+    .key circle{fill:#2d2117;stroke:rgba(216,173,88,.35);stroke-width:2;transition:.18s}
+    .key:hover circle{stroke:var(--gold2);transform-origin:center}
+    .key.active circle{fill:var(--gold);stroke:var(--gold2)}
+    .key.active text{fill:#1b140d}
+    .key.related circle{fill:#5a4125}
+    .key.minor circle{fill:#211811}
+    .center-label{fill:var(--text);font-weight:900;text-anchor:middle}
+    .section-title{margin:4px 0 10px;font-size:1.1rem}
+    .chords{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .chord{border:1px solid var(--line);background:#1b140f;color:var(--text);border-radius:14px;padding:12px;
+      text-align:left;cursor:pointer}
+    .chord strong{font-size:1.15rem;display:block}
+    .chord small{color:var(--muted)}
+    .chord.primary{border-color:var(--gold);background:#3b2a18}
+    .progression{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0 15px}
+    .pill{padding:8px 10px;border-radius:999px;background:#1a130e;border:1px solid var(--line)}
+    .status{margin-top:12px;color:var(--muted);font-size:.85rem}
+    .status.ok{color:var(--ok)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.76);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+    .modal.open{display:flex}
+    .modal-card{width:min(430px,100%);background:linear-gradient(180deg,#342519,#1c140e);border:1px solid var(--line);
+      border-radius:24px;padding:18px}
+    .modal-head{display:flex;justify-content:space-between;align-items:center}
+    .close{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#211811;color:var(--text);font-size:1.4rem}
+    #diagram svg{width:100%;height:auto}
+    @media(max-width:780px){.grid{grid-template-columns:1fr}.app{padding:12px}.card{padding:14px}.install{padding:9px 12px}}
   </style>
 </head>
 <body>
-  <main class="app">
-    <header class="topbar">
-      <div class="brand">
-        <h1>Kvintsirkelen</h1>
-        <p>Finn akkorder som passer sammen</p>
-      </div>
-      <div class="version">v1.2</div>
-    </header>
-
-    <div class="layout">
-      <section class="card circle-card">
-        <div class="mode-row">
-          <div class="segmented" aria-label="Velg tonearttype">
-            <button id="majorMode" class="active" type="button">Dur</button>
-            <button id="minorMode" type="button">Moll</button>
-          </div>
-          <div class="hint">Trykk på en tone i sirkelen</div>
-        </div>
-
-        <div id="circle" class="circle-wrap" aria-label="Interaktiv kvintsirkel">
-          <div class="center-label">
-            <div>
-              <small>Valgt toneart</small>
-              <strong id="centerKey">G</strong>
-              <span id="centerMode">G-dur</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="legend" style="margin-top:16px">
-          <div class="legend-item"><span class="dot gold"></span>Valgt toneart</div>
-          <div class="legend-item"><span class="dot green"></span>Nære durakkorder</div>
-          <div class="legend-item"><span class="dot purple"></span>Beslektede mollakkorder</div>
-        </div>
-      </section>
-
-      <section class="card info-card">
-        <div class="selected-head">
-          <div class="eyebrow">Toneart</div>
-          <h2 id="titleKey">G-dur</h2>
-          <p id="subtitle">Én kryss: F♯</p>
-        </div>
-
-        <div class="section">
-          <h3>Akkorder i tonearten</h3>
-          <div id="chordGrid" class="chord-grid"></div>
-        </div>
-
-        <div class="section">
-          <h3>Vanlige akkordrekker</h3>
-          <div id="progressions" class="progressions"></div>
-        </div>
-
-        <div class="section">
-          <h3>Tips</h3>
-          <p id="tipText" style="margin:0;color:var(--muted);line-height:1.55;font-size:.9rem"></p>
-        </div>
-      </section>
+<div class="app">
+  <header>
+    <div>
+      <h1>Kvintsirkelen</h1>
+      <div class="sub">Finn akkorder som passer sammen – og se gitargrepene.</div>
     </div>
+    <button id="installBtn" class="install">Installer app</button>
+  </header>
 
-    <div class="footer-note">Trykk på en dur- eller molltone for å utforske nye akkordmuligheter.</div>
-  </main>
+  <div class="grid">
+    <section class="card">
+      <div class="controls">
+        <select id="mode">
+          <option value="major">Dur</option>
+          <option value="minor">Moll</option>
+        </select>
+      </div>
+      <div class="circle-wrap"><svg id="circle" viewBox="0 0 600 600" aria-label="Kvintsirkel"></svg></div>
+    </section>
 
-  <div id="chordModalBackdrop" class="modal-backdrop" role="presentation">
-    <section class="chord-modal" role="dialog" aria-modal="true" aria-labelledby="modalChordName">
-      <div class="modal-head">
-        <div>
-          <div class="eyebrow">Gitargrep</div>
-          <h2 id="modalChordName">G</h2>
-        </div>
-        <button id="closeChordModal" class="close-modal" type="button" aria-label="Lukk">×</button>
-      </div>
-      <div class="diagram-area">
-        <div id="chordDiagram"></div>
-        <p id="diagramNote" class="diagram-note"></p>
-      </div>
-      <div class="diagram-help">
-        <strong>Forklaring:</strong> Tallene viser hvilken finger du bruker. 1 er pekefinger, 2 langfinger, 3 ringfinger og 4 lillefinger. X betyr at strengen ikke spilles, mens O betyr åpen streng.
-      </div>
+    <section class="card">
+      <h2 id="selectedTitle" class="section-title">G-dur</h2>
+      <div id="chords" class="chords"></div>
+
+      <h3 class="section-title" style="margin-top:20px">Vanlige akkordrekker</h3>
+      <div id="progressions"></div>
+
+      <div id="pwaStatus" class="status">Kontrollerer installasjon …</div>
     </section>
   </div>
+</div>
 
-  <script>
-    const majorCircle = ["C", "G", "D", "A", "E", "B", "F♯", "D♭", "A♭", "E♭", "B♭", "F"];
-    const minorCircle = ["Am", "Em", "Bm", "F♯m", "C♯m", "G♯m", "D♯m", "B♭m", "Fm", "Cm", "Gm", "Dm"];
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><div class="sub">Gitargrep</div><h2 id="modalTitle">G</h2></div>
+      <button id="closeModal" class="close" aria-label="Lukk">×</button>
+    </div>
+    <div id="diagram"></div>
+    <p id="diagramText" class="sub"></p>
+  </div>
+</div>
 
-    const pitchNames = {
-      sharp: ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"],
-      flat:  ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"]
-    };
+<script>
+const majorKeys=["C","G","D","A","E","B","F♯","D♭","A♭","E♭","B♭","F"];
+const minorKeys=["Am","Em","Bm","F♯m","C♯m","G♯m","D♯m","B♭m","Fm","Cm","Gm","Dm"];
+const chromaticSharp=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+const keyData={
+ "C":["C","Dm","Em","F","G","Am","Bdim"],"G":["G","Am","Bm","C","D","Em","F♯dim"],
+ "D":["D","Em","F♯m","G","A","Bm","C♯dim"],"A":["A","Bm","C♯m","D","E","F♯m","G♯dim"],
+ "E":["E","F♯m","G♯m","A","B","C♯m","D♯dim"],"B":["B","C♯m","D♯m","E","F♯","G♯m","A♯dim"],
+ "F♯":["F♯","G♯m","A♯m","B","C♯","D♯m","Fdim"],"D♭":["D♭","E♭m","Fm","G♭","A♭","B♭m","Cdim"],
+ "A♭":["A♭","B♭m","Cm","D♭","E♭","Fm","Gdim"],"E♭":["E♭","Fm","Gm","A♭","B♭","Cm","Ddim"],
+ "B♭":["B♭","Cm","Dm","E♭","F","Gm","Adim"],"F":["F","Gm","Am","B♭","C","Dm","Edim"]
+};
+const minorData={
+ "Am":["Am","Bdim","C","Dm","Em","F","G"],"Em":["Em","F♯dim","G","Am","Bm","C","D"],
+ "Bm":["Bm","C♯dim","D","Em","F♯m","G","A"],"F♯m":["F♯m","G♯dim","A","Bm","C♯m","D","E"],
+ "C♯m":["C♯m","D♯dim","E","F♯m","G♯m","A","B"],"G♯m":["G♯m","A♯dim","B","C♯m","D♯m","E","F♯"],
+ "D♯m":["D♯m","Fdim","F♯","G♯m","A♯m","B","C♯"],"B♭m":["B♭m","Cdim","D♭","E♭m","Fm","G♭","A♭"],
+ "Fm":["Fm","Gdim","A♭","B♭m","Cm","D♭","E♭"],"Cm":["Cm","Ddim","E♭","Fm","Gm","A♭","B♭"],
+ "Gm":["Gm","Adim","B♭","Cm","Dm","E♭","F"],"Dm":["Dm","Edim","F","Gm","Am","B♭","C"]
+};
 
-    const pitchMap = {
-      "C":0, "B♯":0, "C♯":1, "D♭":1, "D":2, "D♯":3, "E♭":3,
-      "E":4, "F♭":4, "F":5, "E♯":5, "F♯":6, "G♭":6, "G":7,
-      "G♯":8, "A♭":8, "A":9, "A♯":10, "B♭":10, "B":11, "C♭":11
-    };
+let selected="G", mode="major";
+const circle=document.getElementById("circle");
+const modeSelect=document.getElementById("mode");
 
-    const signatures = {
-      "C": "Ingen kryss eller b-er",
-      "G": "Én kryss: F♯",
-      "D": "To kryss: F♯ og C♯",
-      "A": "Tre kryss: F♯, C♯ og G♯",
-      "E": "Fire kryss: F♯, C♯, G♯ og D♯",
-      "B": "Fem kryss",
-      "F♯": "Seks kryss",
-      "D♭": "Fem b-er",
-      "A♭": "Fire b-er",
-      "E♭": "Tre b-er: B♭, E♭ og A♭",
-      "B♭": "To b-er: B♭ og E♭",
-      "F": "Én b: B♭"
-    };
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]}
+function drawCircle(){
+  circle.innerHTML="";
+  const outer=majorKeys, inner=minorKeys;
+  outer.forEach((k,i)=>drawKey(k,i,245,false));
+  inner.forEach((k,i)=>drawKey(k,i,165,true));
+  circle.insertAdjacentHTML("beforeend",`<circle cx="300" cy="300" r="92" fill="#17120d" stroke="rgba(216,173,88,.28)" stroke-width="2"/>
+  <text x="300" y="290" class="center-label" font-size="34">${selected}</text>
+  <text x="300" y="325" class="center-label" font-size="18" fill="#c9b89f">${mode==="major"?"dur":"moll"}</text>`);
+}
+function drawKey(k,i,r,isMinor){
+  const [x,y]=polar(300,300,r,i*30);
+  const active=k===selected;
+  const cls=`key ${isMinor?"minor":""} ${active?"active":""}`;
+  const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+  g.setAttribute("class",cls); g.dataset.key=k;
+  g.innerHTML=`<circle cx="${x}" cy="${y}" r="${isMinor?34:40}"></circle>
+    <text x="${x}" y="${y+6}" text-anchor="middle" fill="#fff8ec" font-size="${isMinor?18:20}">${k}</text>`;
+  g.addEventListener("click",()=>{selected=k;mode=isMinor?"minor":"major";modeSelect.value=mode;render()});
+  circle.appendChild(g);
+}
+function render(){
+  drawCircle();
+  document.getElementById("selectedTitle").textContent=`${selected}${mode==="major"?"-dur":"-moll"}`;
+  const arr=(mode==="major"?keyData[selected]:minorData[selected])||[];
+  const degrees=mode==="major"?["I","ii","iii","IV","V","vi","vii°"]:["i","ii°","III","iv","v","VI","VII"];
+  document.getElementById("chords").innerHTML=arr.map((c,i)=>`<button class="chord ${[0,3,4].includes(i)?"primary":""}" data-chord="${c}">
+    <strong>${c}</strong><small>${degrees[i]} · trykk for gitargrep</small></button>`).join("");
+  const p = mode==="major"
+    ? [[0,4,5,3],[0,5,3,4],[0,3,4,0]]
+    : [[0,5,2,6],[0,3,6,2],[0,6,5,6]];
+  document.getElementById("progressions").innerHTML=p.map(seq=>`<div class="progression">${seq.map(i=>`<span class="pill">${arr[i]}</span>`).join("")}</div>`).join("");
+}
+modeSelect.addEventListener("change",()=>{mode=modeSelect.value;selected=mode==="major"?"G":"Em";render()});
+document.getElementById("chords").addEventListener("click",e=>{const b=e.target.closest("[data-chord]");if(b)openChord(b.dataset.chord)});
 
-    const degreeNamesMajor = ["I · tonika", "ii", "iii", "IV · subdominant", "V · dominant", "vi · parallell", "vii°"];
-    const degreeNamesMinor = ["i · tonika", "ii°", "III", "iv · subdominant", "v · dominant", "VI", "VII"];
+const shapes={
+"C":["x",3,2,0,1,0],"Cm":["x",3,5,5,4,3],"D":["x","x",0,2,3,2],"Dm":["x","x",0,2,3,1],
+"E":[0,2,2,1,0,0],"Em":[0,2,2,0,0,0],"F":[1,3,3,2,1,1],"Fm":[1,3,3,1,1,1],
+"G":[3,2,0,0,0,3],"Gm":[3,5,5,3,3,3],"A":["x",0,2,2,2,0],"Am":["x",0,2,2,1,0],
+"B":["x",2,4,4,4,2],"Bm":["x",2,4,4,3,2],
+"F♯":[2,4,4,3,2,2],"F♯m":[2,4,4,2,2,2],"C♯":["x",4,6,6,6,4],"C♯m":["x",4,6,6,5,4],
+"E♭":["x",6,8,8,8,6],"E♭m":["x",6,8,8,7,6],"A♭":[4,6,6,5,4,4],"B♭":["x",1,3,3,3,1],
+"B♭m":["x",1,3,3,2,1],"D♭":["x",4,6,6,6,4],"G♭":[2,4,4,3,2,2]
+};
+function openChord(chord){
+  document.getElementById("modalTitle").textContent=chord;
+  document.getElementById("diagram").innerHTML=diagramSvg(chord);
+  document.getElementById("diagramText").textContent="X = ikke spill strengen. O = åpen streng.";
+  document.getElementById("modal").classList.add("open");
+}
+function diagramSvg(chord){
+  let frets=shapes[chord];
+  if(!frets && chord.endsWith("dim")) frets=["x","x",1,2,1,2];
+  if(!frets) return "<p>Grepet er ikke lagt inn ennå.</p>";
+  const nums=frets.filter(x=>typeof x==="number"&&x>0);
+  const base=Math.max(1,Math.min(...nums));
+  const start=base>4?base:1;
+  const W=300,H=320,left=45,top=60,sg=42,fg=46;
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  frets.forEach((f,i)=>{const x=left+i*sg;if(f==="x")s+=`<text x="${x}" y="28" text-anchor="middle" fill="#fff" font-size="23">×</text>`;if(f===0)s+=`<text x="${x}" y="28" text-anchor="middle" fill="#fff" font-size="23">○</text>`});
+  for(let i=0;i<6;i++){const x=left+i*sg;s+=`<line x1="${x}" y1="${top}" x2="${x}" y2="${top+4*fg}" stroke="#d6c6ae" stroke-width="${1+(5-i)*.25}"/>`}
+  for(let f=0;f<=4;f++){const y=top+f*fg;s+=`<line x1="${left}" y1="${y}" x2="${left+5*sg}" y2="${y}" stroke="#d6c6ae" stroke-width="${f===0&&start===1?7:2}"/>`}
+  if(start>1)s+=`<text x="18" y="${top+30}" fill="#d8ad58" font-size="16">${start}</text>`;
+  frets.forEach((f,i)=>{if(typeof f!=="number"||f<=0)return;const rel=f-start+1;if(rel<1||rel>4)return;const x=left+i*sg,y=top+(rel-.5)*fg;s+=`<circle cx="${x}" cy="${y}" r="15" fill="#d8ad58" stroke="#f2d493" stroke-width="2"/>`});
+  return s+"</svg>";
+}
+document.getElementById("closeModal").onclick=()=>document.getElementById("modal").classList.remove("open");
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")e.currentTarget.classList.remove("open")});
 
-    const majorIntervals = [0, 2, 4, 5, 7, 9, 11];
-    const majorQualities = ["", "m", "m", "", "", "m", "dim"];
-    const minorIntervals = [0, 2, 3, 5, 7, 8, 10];
-    const minorQualities = ["m", "dim", "", "m", "m", "", ""];
-
-    const progressionSets = {
-      major: [
-        { name: "Popklassikeren", degrees: [1,5,6,4], roman: "I–V–vi–IV" },
-        { name: "Rolig og åpen", degrees: [1,6,4,5], roman: "I–vi–IV–V" },
-        { name: "Sterk avslutning", degrees: [1,4,5,1], roman: "I–IV–V–I" },
-        { name: "Folk og vise", degrees: [1,4,1,5], roman: "I–IV–I–V" }
-      ],
-      minor: [
-        { name: "Mørk og drivende", degrees: [1,6,3,7], roman: "i–VI–III–VII" },
-        { name: "Klassisk moll", degrees: [1,4,5,1], roman: "i–iv–v–i" },
-        { name: "Filmaktig", degrees: [1,7,6,7], roman: "i–VII–VI–VII" },
-        { name: "Rolig mollpop", degrees: [1,3,7,6], roman: "i–III–VII–VI" }
-      ]
-    };
-
-    let mode = localStorage.getItem("circleMode") || "major";
-    let selected = localStorage.getItem("circleKey") || "G";
-
-    const circle = document.getElementById("circle");
-    const majorMode = document.getElementById("majorMode");
-    const minorMode = document.getElementById("minorMode");
-
-    function rootOf(chord) {
-      return chord.endsWith("m") ? chord.slice(0, -1) : chord;
-    }
-
-    function useFlats(root) {
-      return root.includes("♭") || ["F", "B♭", "E♭", "A♭", "D♭"].includes(root);
-    }
-
-    function noteAt(root, semitones) {
-      const index = (pitchMap[root] + semitones) % 12;
-      return (useFlats(root) ? pitchNames.flat : pitchNames.sharp)[index];
-    }
-
-    function buildChords(root, type) {
-      const intervals = type === "major" ? majorIntervals : minorIntervals;
-      const qualities = type === "major" ? majorQualities : minorQualities;
-      return intervals.map((interval, i) => noteAt(root, interval) + qualities[i]);
-    }
-
-    function createCircle() {
-      circle.querySelectorAll(".key-button").forEach(el => el.remove());
-      const size = circle.getBoundingClientRect().width;
-      const outerRadius = size * 0.405;
-      const innerRadius = size * 0.285;
-
-      majorCircle.forEach((key, i) => {
-        const angle = (-90 + i * 30) * Math.PI / 180;
-        addKeyButton(key, "major", angle, outerRadius);
-        addKeyButton(minorCircle[i], "minor", angle, innerRadius);
-      });
-      updateHighlights();
-    }
-
-    function addKeyButton(key, type, angle, radius) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = `key-button ${type}`;
-      btn.textContent = key;
-      btn.dataset.key = key;
-      btn.dataset.type = type;
-      btn.style.marginLeft = `${Math.cos(angle) * radius}px`;
-      btn.style.marginTop = `${Math.sin(angle) * radius}px`;
-      btn.setAttribute("aria-label", `${key}${type === "major" ? " dur" : " moll"}`);
-      btn.addEventListener("click", () => selectKey(key, type));
-      circle.appendChild(btn);
-    }
-
-    function selectKey(key, type) {
-      mode = type;
-      selected = key;
-      localStorage.setItem("circleMode", mode);
-      localStorage.setItem("circleKey", selected);
-      render();
-    }
-
-    function getRelated() {
-      if (mode === "major") {
-        const i = majorCircle.indexOf(selected);
-        return {
-          major: [majorCircle[(i + 11) % 12], majorCircle[(i + 1) % 12]],
-          minor: [minorCircle[i], minorCircle[(i + 11) % 12], minorCircle[(i + 1) % 12]]
-        };
+let deferredPrompt=null;
+const installBtn=document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();deferredPrompt=e;installBtn.classList.add("show");
+  document.getElementById("pwaStatus").textContent="Appen er klar til å installeres.";
+  document.getElementById("pwaStatus").classList.add("ok");
+});
+installBtn.addEventListener("click",async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt=null;installBtn.classList.remove("show");
+});
+window.addEventListener("appinstalled",()=>{
+  document.getElementById("pwaStatus").textContent="Appen er installert.";
+  document.getElementById("pwaStatus").classList.add("ok");
+});
+if(window.matchMedia("(display-mode: standalone)").matches){
+  document.getElementById("pwaStatus").textContent="Appen kjører som installert PWA.";
+  document.getElementById("pwaStatus").classList.add("ok");
+}
+if("serviceWorker" in navigator){
+  window.addEventListener("load",async()=>{
+    try{
+      await navigator.serviceWorker.register("./service-worker.js",{scope:"./"});
+      if(!window.matchMedia("(display-mode: standalone)").matches){
+        setTimeout(()=>{
+          if(!deferredPrompt) document.getElementById("pwaStatus").textContent="Åpne siden i Chrome. Installeringsvalget kan ligge under menyen med tre prikker.";
+        },1800);
       }
-      const i = minorCircle.indexOf(selected);
-      return {
-        major: [majorCircle[i], majorCircle[(i + 11) % 12], majorCircle[(i + 1) % 12]],
-        minor: [minorCircle[(i + 11) % 12], minorCircle[(i + 1) % 12]]
-      };
+    }catch(err){
+      document.getElementById("pwaStatus").textContent="Service worker kunne ikke registreres.";
     }
-
-    function updateHighlights() {
-      const related = getRelated();
-      document.querySelectorAll(".key-button").forEach(btn => {
-        btn.classList.remove("selected", "related", "related-minor");
-        if (btn.dataset.key === selected && btn.dataset.type === mode) {
-          btn.classList.add("selected");
-        } else if (btn.dataset.type === "major" && related.major.includes(btn.dataset.key)) {
-          btn.classList.add("related");
-        } else if (btn.dataset.type === "minor" && related.minor.includes(btn.dataset.key)) {
-          btn.classList.add("related-minor");
-        }
-      });
-    }
-
-    function renderInfo() {
-      const root = rootOf(selected);
-      const chords = buildChords(root, mode);
-      const displayName = `${root}-${mode === "major" ? "dur" : "moll"}`;
-
-      document.getElementById("centerKey").textContent = selected;
-      document.getElementById("centerMode").textContent = displayName;
-      document.getElementById("titleKey").textContent = displayName;
-      document.getElementById("subtitle").textContent = signatures[root] || "Beslektet toneart";
-
-      const degrees = mode === "major" ? degreeNamesMajor : degreeNamesMinor;
-      const chordGrid = document.getElementById("chordGrid");
-      chordGrid.innerHTML = chords.map((chord, i) => {
-        const cls = [0,3,4].includes(i) ? "primary" : ([1,2,5].includes(i) ? "secondary" : "dim");
-        return `<button type="button" class="chord ${cls}" data-chord="${chord}" aria-label="Vis gitargrep for ${chord}"><strong>${chord}</strong><small>${degrees[i]}</small><small class="action">Vis grep</small></button>`;
-      }).join("");
-
-      const progressionContainer = document.getElementById("progressions");
-      progressionContainer.innerHTML = progressionSets[mode].map(item => {
-        const notes = item.degrees.map(d => chords[d - 1]).join(" – ");
-        return `<div class="progression"><div><div class="name">${item.name}</div><div class="notes">${notes}</div></div><div class="degrees">${item.roman}</div></div>`;
-      }).join("");
-
-      const tonic = chords[0];
-      const fourth = chords[3];
-      const fifth = chords[4];
-      document.getElementById("tipText").textContent = mode === "major"
-        ? `Begynn gjerne med ${tonic}, ${fourth} og ${fifth}. De er hovedakkordene i tonearten og gir et trygt utgangspunkt. Legg til ${chords[5]} for en mer følelsesladet klang.`
-        : `Begynn gjerne med ${tonic}, ${fourth} og ${fifth}. I mange mollåter brukes også en durvariant av dominantakkorden for å skape sterkere drag tilbake til ${tonic}.`;
-    }
-
-    function render() {
-      majorMode.classList.toggle("active", mode === "major");
-      minorMode.classList.toggle("active", mode === "minor");
-      updateHighlights();
-      renderInfo();
-    }
-
-    majorMode.addEventListener("click", () => {
-      if (mode === "major") return;
-      const i = minorCircle.indexOf(selected);
-      selectKey(i >= 0 ? majorCircle[i] : "C", "major");
-    });
-
-    minorMode.addEventListener("click", () => {
-      if (mode === "minor") return;
-      const i = majorCircle.indexOf(selected);
-      selectKey(i >= 0 ? minorCircle[i] : "Am", "minor");
-    });
-
-
-    const chordShapes = {
-      "C":   { frets:["x",3,2,0,1,0], fingers:[0,3,2,0,1,0], base:1, note:"Vanlig åpent C-durgrep." },
-      "C#m": { frets:["x",4,6,6,5,4], fingers:[0,1,3,4,2,1], base:4, barre:4, note:"Barrégrep med pekefingeren over 4. bånd." },
-      "C#":  { frets:["x",4,6,6,6,4], fingers:[0,1,3,3,3,1], base:4, barre:4, note:"C♯-dur som barrégrep fra 4. bånd." },
-      "Db":  { frets:["x",4,6,6,6,4], fingers:[0,1,3,3,3,1], base:4, barre:4, note:"D♭-dur som barrégrep fra 4. bånd." },
-      "Dm":  { frets:["x","x",0,2,3,1], fingers:[0,0,0,2,3,1], base:1, note:"Vanlig åpent D-mollgrep." },
-      "D":   { frets:["x","x",0,2,3,2], fingers:[0,0,0,1,3,2], base:1, note:"Vanlig åpent D-durgrep." },
-      "D#m": { frets:["x",6,8,8,7,6], fingers:[0,1,3,4,2,1], base:6, barre:6, note:"Barrégrep fra 6. bånd." },
-      "D#":  { frets:["x",6,8,8,8,6], fingers:[0,1,3,3,3,1], base:6, barre:6, note:"D♯-dur som barrégrep fra 6. bånd." },
-      "Eb":  { frets:["x",6,8,8,8,6], fingers:[0,1,3,3,3,1], base:6, barre:6, note:"E♭-dur som barrégrep fra 6. bånd." },
-      "Ebm": { frets:["x",6,8,8,7,6], fingers:[0,1,3,4,2,1], base:6, barre:6, note:"E♭-moll som barrégrep fra 6. bånd." },
-      "Em":  { frets:[0,2,2,0,0,0], fingers:[0,2,3,0,0,0], base:1, note:"Vanlig åpent E-mollgrep." },
-      "E":   { frets:[0,2,2,1,0,0], fingers:[0,2,3,1,0,0], base:1, note:"Vanlig åpent E-durgrep." },
-      "F":   { frets:[1,3,3,2,1,1], fingers:[1,3,4,2,1,1], base:1, barre:1, note:"Vanlig F-dur med barré over 1. bånd." },
-      "Fm":  { frets:[1,3,3,1,1,1], fingers:[1,3,4,1,1,1], base:1, barre:1, note:"F-moll med barré over 1. bånd." },
-      "F#":  { frets:[2,4,4,3,2,2], fingers:[1,3,4,2,1,1], base:2, barre:2, note:"F♯-dur med barré over 2. bånd." },
-      "F#m": { frets:[2,4,4,2,2,2], fingers:[1,3,4,1,1,1], base:2, barre:2, note:"F♯-moll med barré over 2. bånd." },
-      "Gb":  { frets:[2,4,4,3,2,2], fingers:[1,3,4,2,1,1], base:2, barre:2, note:"G♭-dur med barré over 2. bånd." },
-      "Gbm": { frets:[2,4,4,2,2,2], fingers:[1,3,4,1,1,1], base:2, barre:2, note:"G♭-moll med barré over 2. bånd." },
-      "G":   { frets:[3,2,0,0,0,3], fingers:[2,1,0,0,0,3], base:1, note:"Vanlig åpent G-durgrep." },
-      "Gm":  { frets:[3,5,5,3,3,3], fingers:[1,3,4,1,1,1], base:3, barre:3, note:"G-moll med barré over 3. bånd." },
-      "G#":  { frets:[4,6,6,5,4,4], fingers:[1,3,4,2,1,1], base:4, barre:4, note:"G♯-dur med barré over 4. bånd." },
-      "G#m": { frets:[4,6,6,4,4,4], fingers:[1,3,4,1,1,1], base:4, barre:4, note:"G♯-moll med barré over 4. bånd." },
-      "Ab":  { frets:[4,6,6,5,4,4], fingers:[1,3,4,2,1,1], base:4, barre:4, note:"A♭-dur med barré over 4. bånd." },
-      "Abm": { frets:[4,6,6,4,4,4], fingers:[1,3,4,1,1,1], base:4, barre:4, note:"A♭-moll med barré over 4. bånd." },
-      "A":   { frets:["x",0,2,2,2,0], fingers:[0,0,1,2,3,0], base:1, note:"Vanlig åpent A-durgrep." },
-      "Am":  { frets:["x",0,2,2,1,0], fingers:[0,0,2,3,1,0], base:1, note:"Vanlig åpent A-mollgrep." },
-      "A#":  { frets:["x",1,3,3,3,1], fingers:[0,1,3,3,3,1], base:1, barre:1, note:"A♯-dur som barrégrep fra 1. bånd." },
-      "A#m": { frets:["x",1,3,3,2,1], fingers:[0,1,3,4,2,1], base:1, barre:1, note:"A♯-moll som barrégrep fra 1. bånd." },
-      "Bb":  { frets:["x",1,3,3,3,1], fingers:[0,1,3,3,3,1], base:1, barre:1, note:"B♭-dur som barrégrep fra 1. bånd." },
-      "Bbm": { frets:["x",1,3,3,2,1], fingers:[0,1,3,4,2,1], base:1, barre:1, note:"B♭-moll som barrégrep fra 1. bånd." },
-      "B":   { frets:["x",2,4,4,4,2], fingers:[0,1,3,3,3,1], base:2, barre:2, note:"B-dur som barrégrep fra 2. bånd." },
-      "Bm":  { frets:["x",2,4,4,3,2], fingers:[0,1,3,4,2,1], base:2, barre:2, note:"B-moll som barrégrep fra 2. bånd." }
-    };
-
-    function asciiChordName(chord) {
-      return chord.replaceAll("♯", "#").replaceAll("♭", "b").replace("dim", "dim");
-    }
-
-    function shapeForChord(chord) {
-      const key = asciiChordName(chord);
-      if (chordShapes[key]) return chordShapes[key];
-
-      // Diminished chords: compact four-string shape moved chromatically.
-      if (key.endsWith("dim")) {
-        const roots = {"C":0,"C#":1,"Db":1,"D":2,"D#":3,"Eb":3,"E":4,"F":5,"F#":6,"Gb":6,"G":7,"G#":8,"Ab":8,"A":9,"A#":10,"Bb":10,"B":11};
-        const root = key.slice(0,-3);
-        const fret = ((roots[root] + 1) % 12) || 12;
-        return {
-          frets:["x","x",fret,fret+1,fret,fret+1],
-          fingers:[0,0,1,3,2,4],
-          base:fret,
-          note:"Et flyttbart, kompakt dim-grep på de fire lyseste strengene."
-        };
-      }
-      return null;
-    }
-
-    function renderChordDiagram(chord) {
-      const shape = shapeForChord(chord);
-      if (!shape) {
-        document.getElementById("chordDiagram").innerHTML = "<p>Dette grepet er ikke lagt inn ennå.</p>";
-        document.getElementById("diagramNote").textContent = "";
-        return;
-      }
-
-      const width = 300, height = 330;
-      const left = 45, top = 62, stringGap = 42, fretGap = 46;
-      const shownBase = shape.base || 1;
-      const relativeFrets = shape.frets.filter(v => typeof v === "number" && v > 0).map(v => v - shownBase + 1);
-      const maxRelative = Math.max(4, ...relativeFrets);
-      const fretCount = Math.min(5, maxRelative);
-
-      let svg = `<svg class="fretboard-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Gitargrep for ${chord}">`;
-
-      // String status above nut
-      shape.frets.forEach((fret, i) => {
-        const x = left + i * stringGap;
-        const label = fret === "x" ? "×" : (fret === 0 ? "○" : "");
-        if (label) svg += `<text x="${x}" y="30" text-anchor="middle" fill="#fff8ec" font-size="24" font-weight="700">${label}</text>`;
-      });
-
-      // Fret number
-      if (shownBase > 1) {
-        svg += `<text x="18" y="${top + fretGap * .68}" text-anchor="middle" fill="#d8ad58" font-size="16" font-weight="800">${shownBase}</text>`;
-      }
-
-      // Frets
-      for (let f = 0; f <= fretCount; f++) {
-        const y = top + f * fretGap;
-        const strokeW = (f === 0 && shownBase === 1) ? 8 : 2;
-        svg += `<line x1="${left}" y1="${y}" x2="${left + 5*stringGap}" y2="${y}" stroke="#e5d7c2" stroke-width="${strokeW}" stroke-linecap="round"/>`;
-      }
-
-      // Strings
-      for (let s = 0; s < 6; s++) {
-        const x = left + s * stringGap;
-        svg += `<line x1="${x}" y1="${top}" x2="${x}" y2="${top + fretCount*fretGap}" stroke="#c4b399" stroke-width="${1 + (5-s)*.32}"/>`;
-      }
-
-      // Barre
-      if (shape.barre) {
-        const rel = shape.barre - shownBase + 1;
-        if (rel >= 1 && rel <= fretCount) {
-          const y = top + (rel - .5) * fretGap;
-          const active = shape.frets.map((v,i)=>v===shape.barre?i:-1).filter(i=>i>=0);
-          if (active.length >= 2) {
-            const x1 = left + Math.min(...active)*stringGap;
-            const x2 = left + Math.max(...active)*stringGap;
-            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#d8ad58" stroke-width="24" stroke-linecap="round"/>`;
-          }
-        }
-      }
-
-      // Finger dots
-      shape.frets.forEach((fret, i) => {
-        if (typeof fret !== "number" || fret <= 0) return;
-        const rel = fret - shownBase + 1;
-        if (rel < 1 || rel > fretCount) return;
-        const x = left + i * stringGap;
-        const y = top + (rel - .5) * fretGap;
-        const finger = shape.fingers[i] || "";
-        svg += `<circle cx="${x}" cy="${y}" r="15" fill="#d8ad58" stroke="#f5dfaa" stroke-width="2"/>`;
-        svg += `<text x="${x}" y="${y+5}" text-anchor="middle" fill="#1b140d" font-size="14" font-weight="900">${finger}</text>`;
-      });
-
-      svg += `</svg>`;
-      document.getElementById("chordDiagram").innerHTML = svg;
-      document.getElementById("diagramNote").textContent = shape.note;
-    }
-
-    const chordModalBackdrop = document.getElementById("chordModalBackdrop");
-    const closeChordModal = document.getElementById("closeChordModal");
-
-    function openChordModal(chord) {
-      document.getElementById("modalChordName").textContent = chord;
-      renderChordDiagram(chord);
-      chordModalBackdrop.classList.add("open");
-      document.body.style.overflow = "hidden";
-      closeChordModal.focus();
-    }
-
-    function closeModal() {
-      chordModalBackdrop.classList.remove("open");
-      document.body.style.overflow = "";
-    }
-
-    document.getElementById("chordGrid").addEventListener("click", event => {
-      const card = event.target.closest("[data-chord]");
-      if (card) openChordModal(card.dataset.chord);
-    });
-
-    closeChordModal.addEventListener("click", closeModal);
-    chordModalBackdrop.addEventListener("click", event => {
-      if (event.target === chordModalBackdrop) closeModal();
-    });
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape") closeModal();
-    });
-
-
-    let resizeTimer;
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(createCircle, 100);
-    });
-
-    createCircle();
-    render();
-  </script>
+  });
+}
+render();
+</script>
 </body>
 </html>

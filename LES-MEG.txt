@@ -1,17 +1,24 @@
-KVINTSIRKELEN v1.2 – PWA
+KVINTSIRKELEN v2.0 – PWA
 
-Denne versjonen retter feilen som gjorde at akkordene i selve kvintsirkelen kunne forsvinne.
+1. Slett eller erstatt de gamle filene i GitHub-repositoriet.
+2. Last opp ALLE filene og mappen nedenfor:
 
-Last opp hele innholdet til roten av GitHub-repositoriet og erstatt de gamle filene.
-
-Behold denne strukturen:
 index.html
 manifest.webmanifest
 service-worker.js
-LES-MEG.txt
 icons/
   icon-192.png
   icon-512.png
+  apple-touch-icon.png
+
+3. Behold icons-mappen. Ikke flytt ikonene ut av mappen.
+4. Vent 1–3 minutter etter opplasting.
+5. Åpne:
+   https://lebear79.github.io/Kvintsirkel/
+
+6. Bruk Chrome på Android.
+7. Trykk «Installer app» øverst når knappen vises.
+   Hvis knappen ikke vises med en gang, åpne Chrome-menyen med tre prikker.
 
 Viktig:
-Ikonene skal ligge inne i icons-mappen.
+Gamle snarveier kan bruke en tidligere mellomlagret versjon. Slett den gamle snarveien først og åpne nettadressen direkte i Chrome.
