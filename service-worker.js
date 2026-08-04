@@ -1,4 +1,4 @@
-const CACHE_NAME = "kvintsirkelen-v1.1";
+const CACHE_NAME = "kvintsirkelen-v1.2";
 const APP_FILES = [
   "./",
   "./index.html",

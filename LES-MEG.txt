@@ -1,11 +1,17 @@
-KVINTSIRKELEN v1.1 – PWA
+KVINTSIRKELEN v1.2 – PWA
 
-Last opp hele innholdet i denne mappen til roten av GitHub-repositoriet.
+Denne versjonen retter feilen som gjorde at akkordene i selve kvintsirkelen kunne forsvinne.
+
+Last opp hele innholdet til roten av GitHub-repositoriet og erstatt de gamle filene.
+
+Behold denne strukturen:
+index.html
+manifest.webmanifest
+service-worker.js
+LES-MEG.txt
+icons/
+  icon-192.png
+  icon-512.png
 
 Viktig:
-- Behold mappen 'icons'.
-- icon-192.png og icon-512.png skal ligge inne i icons-mappen.
-- index.html, manifest.webmanifest og service-worker.js skal ligge i hovedmappen.
-
-Ny funksjon:
-Trykk på en akkord under «Akkorder i tonearten» for å åpne et gitardiagram.
+Ikonene skal ligge inne i icons-mappen.

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#17120d" />
-  <title>Kvintsirkelen – akkordhjelper v1.1</title>
+  <title>Kvintsirkelen – akkordhjelper v1.2</title>
   <style>
     :root {
       --bg: #17120d;
@@ -402,7 +402,7 @@
         <h1>Kvintsirkelen</h1>
         <p>Finn akkorder som passer sammen</p>
       </div>
-      <div class="version">v1.1</div>
+      <div class="version">v1.2</div>
     </header>
 
     <div class="layout">
@@ -458,6 +458,25 @@
 
     <div class="footer-note">Trykk på en dur- eller molltone for å utforske nye akkordmuligheter.</div>
   </main>
+
+  <div id="chordModalBackdrop" class="modal-backdrop" role="presentation">
+    <section class="chord-modal" role="dialog" aria-modal="true" aria-labelledby="modalChordName">
+      <div class="modal-head">
+        <div>
+          <div class="eyebrow">Gitargrep</div>
+          <h2 id="modalChordName">G</h2>
+        </div>
+        <button id="closeChordModal" class="close-modal" type="button" aria-label="Lukk">×</button>
+      </div>
+      <div class="diagram-area">
+        <div id="chordDiagram"></div>
+        <p id="diagramNote" class="diagram-note"></p>
+      </div>
+      <div class="diagram-help">
+        <strong>Forklaring:</strong> Tallene viser hvilken finger du bruker. 1 er pekefinger, 2 langfinger, 3 ringfinger og 4 lillefinger. X betyr at strengen ikke spilles, mens O betyr åpen streng.
+      </div>
+    </section>
+  </div>
 
   <script>
     const majorCircle = ["C", "G", "D", "A", "E", "B", "F♯", "D♭", "A♭", "E♭", "B♭", "F"];
@@ -824,25 +843,5 @@
     createCircle();
     render();
   </script>
-
-  <div id="chordModalBackdrop" class="modal-backdrop" role="presentation">
-    <section class="chord-modal" role="dialog" aria-modal="true" aria-labelledby="modalChordName">
-      <div class="modal-head">
-        <div>
-          <div class="eyebrow">Gitargrep</div>
-          <h2 id="modalChordName">G</h2>
-        </div>
-        <button id="closeChordModal" class="close-modal" type="button" aria-label="Lukk">×</button>
-      </div>
-      <div class="diagram-area">
-        <div id="chordDiagram"></div>
-        <p id="diagramNote" class="diagram-note"></p>
-      </div>
-      <div class="diagram-help">
-        <strong>Forklaring:</strong> Tallene viser hvilken finger du bruker. 1 er pekefinger, 2 langfinger, 3 ringfinger og 4 lillefinger. X betyr at strengen ikke spilles, mens O betyr åpen streng.
-      </div>
-    </section>
-  </div>
-
 </body>
 </html>
