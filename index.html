@@ -8,61 +8,78 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Kvintsirkelen">
-  <title>Kvintsirkelen</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icons/icon-192.png">
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <title>Kvintsirkelen v3.0</title>
+
+  <link rel="manifest" href="./manifest-v3.webmanifest?v=3.0.0">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/kvintsirkelen-v3-192.png?v=3.0.0">
+  <link rel="apple-touch-icon" href="./icons/kvintsirkelen-v3-apple.png?v=3.0.0">
+
   <style>
     :root{
-      --bg:#17120d;--panel:#241a12;--panel2:#302218;--text:#fff8ec;--muted:#c9b89f;
-      --gold:#d8ad58;--gold2:#f2d493;--line:rgba(216,173,88,.22);--ok:#87c98a;
+      --bg:#17120d;--panel:#261b12;--panel2:#332418;--text:#fff8ec;--muted:#c8b79e;
+      --gold:#deb35b;--gold2:#f4d99a;--line:rgba(222,179,91,.24);--green:#8fd18e;--red:#e88974;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:radial-gradient(circle at top,#3a2818 0,#17120d 45%);color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+    html{background:var(--bg)}
+    body{
+      margin:0;min-height:100vh;color:var(--text);
+      background:radial-gradient(circle at top,#3c2a18 0,#17120d 48%);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
     button,select{font:inherit}
-    .app{max-width:1100px;margin:auto;padding:18px}
-    header{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:18px}
-    h1{font-size:clamp(1.5rem,4vw,2.3rem);margin:0}
-    .sub{color:var(--muted);font-size:.9rem}
-    .install{border:1px solid var(--gold);background:var(--gold);color:#1b140d;padding:11px 15px;
-      border-radius:999px;font-weight:800;cursor:pointer;display:none}
+    button{-webkit-tap-highlight-color:transparent}
+    .app{max-width:1120px;margin:auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+    h1{margin:0;font-size:clamp(1.65rem,5vw,2.5rem)}
+    .subtitle{color:var(--muted);font-size:.94rem;margin-top:4px}
+    .install{
+      display:none;border:0;border-radius:999px;padding:12px 17px;background:var(--gold);color:#1b140d;
+      font-weight:900;cursor:pointer;box-shadow:0 8px 24px rgba(222,179,91,.22)
+    }
     .install.show{display:inline-flex}
-    .grid{display:grid;grid-template-columns:minmax(320px,1.1fr) minmax(280px,.9fr);gap:18px}
-    .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
-      border-radius:24px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.24)}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-    select{background:#1a130e;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-    .circle-wrap{aspect-ratio:1;position:relative;max-width:620px;margin:auto}
-    svg{width:100%;height:100%;display:block}
+    .layout{display:grid;grid-template-columns:minmax(330px,1.12fr) minmax(290px,.88fr);gap:18px}
+    .panel{
+      background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+      border-radius:25px;padding:18px;box-shadow:0 20px 70px rgba(0,0,0,.25)
+    }
+    .controls{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    select{background:#1b130e;color:var(--text);border:1px solid var(--line);padding:11px 14px;border-radius:13px}
+    .circle-wrap{aspect-ratio:1;max-width:650px;margin:auto}
+    #circle{width:100%;height:100%;display:block}
     .key{cursor:pointer}
-    .key text{pointer-events:none;font-weight:800}
-    .key circle{fill:#2d2117;stroke:rgba(216,173,88,.35);stroke-width:2;transition:.18s}
-    .key:hover circle{stroke:var(--gold2);transform-origin:center}
+    .key circle{fill:#2a1e15;stroke:rgba(222,179,91,.38);stroke-width:2;transition:.16s}
+    .key text{pointer-events:none;fill:var(--text);font-weight:850}
+    .key:hover circle{stroke:var(--gold2)}
     .key.active circle{fill:var(--gold);stroke:var(--gold2)}
     .key.active text{fill:#1b140d}
-    .key.related circle{fill:#5a4125}
-    .key.minor circle{fill:#211811}
-    .center-label{fill:var(--text);font-weight:900;text-anchor:middle}
-    .section-title{margin:4px 0 10px;font-size:1.1rem}
+    .key.minor circle{fill:#201710}
+    .section-title{margin:2px 0 11px;font-size:1.16rem}
     .chords{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-    .chord{border:1px solid var(--line);background:#1b140f;color:var(--text);border-radius:14px;padding:12px;
-      text-align:left;cursor:pointer}
-    .chord strong{font-size:1.15rem;display:block}
-    .chord small{color:var(--muted)}
-    .chord.primary{border-color:var(--gold);background:#3b2a18}
-    .progression{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0 15px}
-    .pill{padding:8px 10px;border-radius:999px;background:#1a130e;border:1px solid var(--line)}
-    .status{margin-top:12px;color:var(--muted);font-size:.85rem}
-    .status.ok{color:var(--ok)}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.76);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+    .chord{
+      text-align:left;background:#1b130e;color:var(--text);border:1px solid var(--line);border-radius:15px;
+      padding:13px;cursor:pointer;transition:.14s
+    }
+    .chord:hover{transform:translateY(-1px);border-color:var(--gold)}
+    .chord.primary{background:#3b2918;border-color:var(--gold)}
+    .chord strong{display:block;font-size:1.18rem}
+    .chord small{color:var(--muted);line-height:1.25}
+    .progression{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+    .pill{background:#1b130e;border:1px solid var(--line);border-radius:999px;padding:8px 10px}
+    .diagnostics{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+    .diag-title{font-weight:800;margin-bottom:7px}
+    .diag-line{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.83rem;padding:4px 0}
+    .diag-line strong.ok{color:var(--green)}
+    .diag-line strong.bad{color:var(--red)}
+    .hint{font-size:.79rem;color:var(--muted);line-height:1.45;margin-top:9px}
+    .modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.78)}
     .modal.open{display:flex}
-    .modal-card{width:min(430px,100%);background:linear-gradient(180deg,#342519,#1c140e);border:1px solid var(--line);
-      border-radius:24px;padding:18px}
+    .modal-card{width:min(430px,100%);background:linear-gradient(180deg,#37271a,#1d150f);border:1px solid var(--line);border-radius:25px;padding:18px}
     .modal-head{display:flex;justify-content:space-between;align-items:center}
-    .close{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#211811;color:var(--text);font-size:1.4rem}
+    .close{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#211810;color:var(--text);font-size:1.45rem}
     #diagram svg{width:100%;height:auto}
-    @media(max-width:780px){.grid{grid-template-columns:1fr}.app{padding:12px}.card{padding:14px}.install{padding:9px 12px}}
+    @media(max-width:790px){
+      .layout{grid-template-columns:1fr}.app{padding:12px}.panel{padding:14px}.install{padding:10px 13px}
+    }
   </style>
 </head>
 <body>
@@ -70,175 +87,183 @@
   <header>
     <div>
       <h1>Kvintsirkelen</h1>
-      <div class="sub">Finn akkorder som passer sammen – og se gitargrepene.</div>
+      <div class="subtitle">Akkorder, akkordrekker og gitargrep.</div>
     </div>
-    <button id="installBtn" class="install">Installer app</button>
+    <button id="installBtn" class="install" type="button">Installer app</button>
   </header>
 
-  <div class="grid">
-    <section class="card">
+  <main class="layout">
+    <section class="panel">
       <div class="controls">
-        <select id="mode">
+        <select id="mode" aria-label="Velg dur eller moll">
           <option value="major">Dur</option>
           <option value="minor">Moll</option>
         </select>
       </div>
-      <div class="circle-wrap"><svg id="circle" viewBox="0 0 600 600" aria-label="Kvintsirkel"></svg></div>
+      <div class="circle-wrap">
+        <svg id="circle" viewBox="0 0 600 600" aria-label="Interaktiv kvintsirkel"></svg>
+      </div>
     </section>
 
-    <section class="card">
+    <section class="panel">
       <h2 id="selectedTitle" class="section-title">G-dur</h2>
       <div id="chords" class="chords"></div>
 
       <h3 class="section-title" style="margin-top:20px">Vanlige akkordrekker</h3>
       <div id="progressions"></div>
 
-      <div id="pwaStatus" class="status">Kontrollerer installasjon …</div>
+      <div class="diagnostics">
+        <div class="diag-title">PWA-status</div>
+        <div class="diag-line"><span>Manifest</span><strong id="manifestStatus">Kontrollerer …</strong></div>
+        <div class="diag-line"><span>Service worker</span><strong id="swStatus">Kontrollerer …</strong></div>
+        <div class="diag-line"><span>Visningsmodus</span><strong id="displayStatus">Nettleser</strong></div>
+        <div id="installHint" class="hint">Når alle kontrollene er grønne, skal Chrome kunne tilby installasjon som app.</div>
+      </div>
     </section>
-  </div>
+  </main>
 </div>
 
 <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-card">
     <div class="modal-head">
-      <div><div class="sub">Gitargrep</div><h2 id="modalTitle">G</h2></div>
-      <button id="closeModal" class="close" aria-label="Lukk">×</button>
+      <div><div class="subtitle">Gitargrep</div><h2 id="modalTitle">G</h2></div>
+      <button id="closeModal" class="close" type="button" aria-label="Lukk">×</button>
     </div>
     <div id="diagram"></div>
-    <p id="diagramText" class="sub"></p>
+    <p class="subtitle">X betyr at strengen ikke spilles. O betyr åpen streng.</p>
   </div>
 </div>
 
 <script>
 const majorKeys=["C","G","D","A","E","B","F♯","D♭","A♭","E♭","B♭","F"];
 const minorKeys=["Am","Em","Bm","F♯m","C♯m","G♯m","D♯m","B♭m","Fm","Cm","Gm","Dm"];
-const chromaticSharp=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
 const keyData={
- "C":["C","Dm","Em","F","G","Am","Bdim"],"G":["G","Am","Bm","C","D","Em","F♯dim"],
- "D":["D","Em","F♯m","G","A","Bm","C♯dim"],"A":["A","Bm","C♯m","D","E","F♯m","G♯dim"],
- "E":["E","F♯m","G♯m","A","B","C♯m","D♯dim"],"B":["B","C♯m","D♯m","E","F♯","G♯m","A♯dim"],
- "F♯":["F♯","G♯m","A♯m","B","C♯","D♯m","Fdim"],"D♭":["D♭","E♭m","Fm","G♭","A♭","B♭m","Cdim"],
- "A♭":["A♭","B♭m","Cm","D♭","E♭","Fm","Gdim"],"E♭":["E♭","Fm","Gm","A♭","B♭","Cm","Ddim"],
- "B♭":["B♭","Cm","Dm","E♭","F","Gm","Adim"],"F":["F","Gm","Am","B♭","C","Dm","Edim"]
+"C":["C","Dm","Em","F","G","Am","Bdim"],"G":["G","Am","Bm","C","D","Em","F♯dim"],
+"D":["D","Em","F♯m","G","A","Bm","C♯dim"],"A":["A","Bm","C♯m","D","E","F♯m","G♯dim"],
+"E":["E","F♯m","G♯m","A","B","C♯m","D♯dim"],"B":["B","C♯m","D♯m","E","F♯","G♯m","A♯dim"],
+"F♯":["F♯","G♯m","A♯m","B","C♯","D♯m","Fdim"],"D♭":["D♭","E♭m","Fm","G♭","A♭","B♭m","Cdim"],
+"A♭":["A♭","B♭m","Cm","D♭","E♭","Fm","Gdim"],"E♭":["E♭","Fm","Gm","A♭","B♭","Cm","Ddim"],
+"B♭":["B♭","Cm","Dm","E♭","F","Gm","Adim"],"F":["F","Gm","Am","B♭","C","Dm","Edim"]
 };
 const minorData={
- "Am":["Am","Bdim","C","Dm","Em","F","G"],"Em":["Em","F♯dim","G","Am","Bm","C","D"],
- "Bm":["Bm","C♯dim","D","Em","F♯m","G","A"],"F♯m":["F♯m","G♯dim","A","Bm","C♯m","D","E"],
- "C♯m":["C♯m","D♯dim","E","F♯m","G♯m","A","B"],"G♯m":["G♯m","A♯dim","B","C♯m","D♯m","E","F♯"],
- "D♯m":["D♯m","Fdim","F♯","G♯m","A♯m","B","C♯"],"B♭m":["B♭m","Cdim","D♭","E♭m","Fm","G♭","A♭"],
- "Fm":["Fm","Gdim","A♭","B♭m","Cm","D♭","E♭"],"Cm":["Cm","Ddim","E♭","Fm","Gm","A♭","B♭"],
- "Gm":["Gm","Adim","B♭","Cm","Dm","E♭","F"],"Dm":["Dm","Edim","F","Gm","Am","B♭","C"]
+"Am":["Am","Bdim","C","Dm","Em","F","G"],"Em":["Em","F♯dim","G","Am","Bm","C","D"],
+"Bm":["Bm","C♯dim","D","Em","F♯m","G","A"],"F♯m":["F♯m","G♯dim","A","Bm","C♯m","D","E"],
+"C♯m":["C♯m","D♯dim","E","F♯m","G♯m","A","B"],"G♯m":["G♯m","A♯dim","B","C♯m","D♯m","E","F♯"],
+"D♯m":["D♯m","Fdim","F♯","G♯m","A♯m","B","C♯"],"B♭m":["B♭m","Cdim","D♭","E♭m","Fm","G♭","A♭"],
+"Fm":["Fm","Gdim","A♭","B♭m","Cm","D♭","E♭"],"Cm":["Cm","Ddim","E♭","Fm","Gm","A♭","B♭"],
+"Gm":["Gm","Adim","B♭","Cm","Dm","E♭","F"],"Dm":["Dm","Edim","F","Gm","Am","B♭","C"]
 };
-
 let selected="G", mode="major";
 const circle=document.getElementById("circle");
 const modeSelect=document.getElementById("mode");
-
-function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]}
-function drawCircle(){
-  circle.innerHTML="";
-  const outer=majorKeys, inner=minorKeys;
-  outer.forEach((k,i)=>drawKey(k,i,245,false));
-  inner.forEach((k,i)=>drawKey(k,i,165,true));
-  circle.insertAdjacentHTML("beforeend",`<circle cx="300" cy="300" r="92" fill="#17120d" stroke="rgba(216,173,88,.28)" stroke-width="2"/>
-  <text x="300" y="290" class="center-label" font-size="34">${selected}</text>
-  <text x="300" y="325" class="center-label" font-size="18" fill="#c9b89f">${mode==="major"?"dur":"moll"}</text>`);
-}
+function polar(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]}
 function drawKey(k,i,r,isMinor){
   const [x,y]=polar(300,300,r,i*30);
-  const active=k===selected;
-  const cls=`key ${isMinor?"minor":""} ${active?"active":""}`;
   const g=document.createElementNS("http://www.w3.org/2000/svg","g");
-  g.setAttribute("class",cls); g.dataset.key=k;
-  g.innerHTML=`<circle cx="${x}" cy="${y}" r="${isMinor?34:40}"></circle>
-    <text x="${x}" y="${y+6}" text-anchor="middle" fill="#fff8ec" font-size="${isMinor?18:20}">${k}</text>`;
+  g.setAttribute("class",`key ${isMinor?"minor":""} ${k===selected?"active":""}`);
+  g.innerHTML=`<circle cx="${x}" cy="${y}" r="${isMinor?34:40}"></circle><text x="${x}" y="${y+6}" text-anchor="middle" font-size="${isMinor?18:20}">${k}</text>`;
   g.addEventListener("click",()=>{selected=k;mode=isMinor?"minor":"major";modeSelect.value=mode;render()});
   circle.appendChild(g);
 }
+function drawCircle(){
+  circle.innerHTML="";
+  majorKeys.forEach((k,i)=>drawKey(k,i,245,false));
+  minorKeys.forEach((k,i)=>drawKey(k,i,165,true));
+  circle.insertAdjacentHTML("beforeend",`<circle cx="300" cy="300" r="92" fill="#17120d" stroke="rgba(222,179,91,.28)" stroke-width="2"/>
+  <text x="300" y="292" text-anchor="middle" fill="#fff8ec" font-size="34" font-weight="900">${selected}</text>
+  <text x="300" y="326" text-anchor="middle" fill="#c8b79e" font-size="18">${mode==="major"?"dur":"moll"}</text>`);
+}
 function render(){
   drawCircle();
-  document.getElementById("selectedTitle").textContent=`${selected}${mode==="major"?"-dur":"-moll"}`;
   const arr=(mode==="major"?keyData[selected]:minorData[selected])||[];
   const degrees=mode==="major"?["I","ii","iii","IV","V","vi","vii°"]:["i","ii°","III","iv","v","VI","VII"];
-  document.getElementById("chords").innerHTML=arr.map((c,i)=>`<button class="chord ${[0,3,4].includes(i)?"primary":""}" data-chord="${c}">
-    <strong>${c}</strong><small>${degrees[i]} · trykk for gitargrep</small></button>`).join("");
-  const p = mode==="major"
-    ? [[0,4,5,3],[0,5,3,4],[0,3,4,0]]
-    : [[0,5,2,6],[0,3,6,2],[0,6,5,6]];
-  document.getElementById("progressions").innerHTML=p.map(seq=>`<div class="progression">${seq.map(i=>`<span class="pill">${arr[i]}</span>`).join("")}</div>`).join("");
+  document.getElementById("selectedTitle").textContent=`${selected}${mode==="major"?"-dur":"-moll"}`;
+  document.getElementById("chords").innerHTML=arr.map((c,i)=>`<button type="button" class="chord ${[0,3,4].includes(i)?"primary":""}" data-chord="${c}">
+  <strong>${c}</strong><small>${degrees[i]} · trykk for gitargrep</small></button>`).join("");
+  const sets=mode==="major"?[[0,4,5,3],[0,5,3,4],[0,3,4,0]]:[[0,5,2,6],[0,3,6,2],[0,6,5,6]];
+  document.getElementById("progressions").innerHTML=sets.map(seq=>`<div class="progression">${seq.map(i=>`<span class="pill">${arr[i]}</span>`).join("")}</div>`).join("");
 }
 modeSelect.addEventListener("change",()=>{mode=modeSelect.value;selected=mode==="major"?"G":"Em";render()});
-document.getElementById("chords").addEventListener("click",e=>{const b=e.target.closest("[data-chord]");if(b)openChord(b.dataset.chord)});
 
 const shapes={
 "C":["x",3,2,0,1,0],"Cm":["x",3,5,5,4,3],"D":["x","x",0,2,3,2],"Dm":["x","x",0,2,3,1],
 "E":[0,2,2,1,0,0],"Em":[0,2,2,0,0,0],"F":[1,3,3,2,1,1],"Fm":[1,3,3,1,1,1],
 "G":[3,2,0,0,0,3],"Gm":[3,5,5,3,3,3],"A":["x",0,2,2,2,0],"Am":["x",0,2,2,1,0],
-"B":["x",2,4,4,4,2],"Bm":["x",2,4,4,3,2],
-"F♯":[2,4,4,3,2,2],"F♯m":[2,4,4,2,2,2],"C♯":["x",4,6,6,6,4],"C♯m":["x",4,6,6,5,4],
-"E♭":["x",6,8,8,8,6],"E♭m":["x",6,8,8,7,6],"A♭":[4,6,6,5,4,4],"B♭":["x",1,3,3,3,1],
-"B♭m":["x",1,3,3,2,1],"D♭":["x",4,6,6,6,4],"G♭":[2,4,4,3,2,2]
+"B":["x",2,4,4,4,2],"Bm":["x",2,4,4,3,2],"F♯":[2,4,4,3,2,2],"F♯m":[2,4,4,2,2,2],
+"C♯":["x",4,6,6,6,4],"C♯m":["x",4,6,6,5,4],"E♭":["x",6,8,8,8,6],"E♭m":["x",6,8,8,7,6],
+"A♭":[4,6,6,5,4,4],"B♭":["x",1,3,3,3,1],"B♭m":["x",1,3,3,2,1],"D♭":["x",4,6,6,6,4],"G♭":[2,4,4,3,2,2]
 };
-function openChord(chord){
-  document.getElementById("modalTitle").textContent=chord;
-  document.getElementById("diagram").innerHTML=diagramSvg(chord);
-  document.getElementById("diagramText").textContent="X = ikke spill strengen. O = åpen streng.";
-  document.getElementById("modal").classList.add("open");
-}
 function diagramSvg(chord){
   let frets=shapes[chord];
-  if(!frets && chord.endsWith("dim")) frets=["x","x",1,2,1,2];
-  if(!frets) return "<p>Grepet er ikke lagt inn ennå.</p>";
-  const nums=frets.filter(x=>typeof x==="number"&&x>0);
-  const base=Math.max(1,Math.min(...nums));
-  const start=base>4?base:1;
-  const W=300,H=320,left=45,top=60,sg=42,fg=46;
-  let s=`<svg viewBox="0 0 ${W} ${H}">`;
-  frets.forEach((f,i)=>{const x=left+i*sg;if(f==="x")s+=`<text x="${x}" y="28" text-anchor="middle" fill="#fff" font-size="23">×</text>`;if(f===0)s+=`<text x="${x}" y="28" text-anchor="middle" fill="#fff" font-size="23">○</text>`});
-  for(let i=0;i<6;i++){const x=left+i*sg;s+=`<line x1="${x}" y1="${top}" x2="${x}" y2="${top+4*fg}" stroke="#d6c6ae" stroke-width="${1+(5-i)*.25}"/>`}
-  for(let f=0;f<=4;f++){const y=top+f*fg;s+=`<line x1="${left}" y1="${y}" x2="${left+5*sg}" y2="${y}" stroke="#d6c6ae" stroke-width="${f===0&&start===1?7:2}"/>`}
-  if(start>1)s+=`<text x="18" y="${top+30}" fill="#d8ad58" font-size="16">${start}</text>`;
-  frets.forEach((f,i)=>{if(typeof f!=="number"||f<=0)return;const rel=f-start+1;if(rel<1||rel>4)return;const x=left+i*sg,y=top+(rel-.5)*fg;s+=`<circle cx="${x}" cy="${y}" r="15" fill="#d8ad58" stroke="#f2d493" stroke-width="2"/>`});
+  if(!frets&&chord.endsWith("dim")) frets=["x","x",1,2,1,2];
+  if(!frets)return"<p>Grepet er ikke lagt inn ennå.</p>";
+  const nums=frets.filter(v=>typeof v==="number"&&v>0);
+  const min=Math.min(...nums),start=min>4?min:1;
+  const W=300,H=300,left=45,top=58,sg=42,fg=45;
+  let s=`<svg viewBox="0 0 ${W} ${H}" aria-label="Gitargrep for ${chord}">`;
+  frets.forEach((f,i)=>{const x=left+i*sg;if(f==="x")s+=`<text x="${x}" y="27" text-anchor="middle" fill="#fff8ec" font-size="23">×</text>`;if(f===0)s+=`<text x="${x}" y="27" text-anchor="middle" fill="#fff8ec" font-size="23">○</text>`});
+  for(let i=0;i<6;i++){const x=left+i*sg;s+=`<line x1="${x}" y1="${top}" x2="${x}" y2="${top+4*fg}" stroke="#dacbb3" stroke-width="${1+(5-i)*.25}"/>`}
+  for(let f=0;f<=4;f++){const y=top+f*fg;s+=`<line x1="${left}" y1="${y}" x2="${left+5*sg}" y2="${y}" stroke="#dacbb3" stroke-width="${f===0&&start===1?7:2}"/>`}
+  if(start>1)s+=`<text x="17" y="${top+29}" fill="#deb35b" font-size="16">${start}</text>`;
+  frets.forEach((f,i)=>{if(typeof f!=="number"||f<=0)return;const rel=f-start+1;if(rel<1||rel>4)return;const x=left+i*sg,y=top+(rel-.5)*fg;s+=`<circle cx="${x}" cy="${y}" r="15" fill="#deb35b" stroke="#f4d99a" stroke-width="2"/>`});
   return s+"</svg>";
 }
+document.getElementById("chords").addEventListener("click",e=>{
+  const b=e.target.closest("[data-chord]");if(!b)return;
+  document.getElementById("modalTitle").textContent=b.dataset.chord;
+  document.getElementById("diagram").innerHTML=diagramSvg(b.dataset.chord);
+  document.getElementById("modal").classList.add("open");
+});
 document.getElementById("closeModal").onclick=()=>document.getElementById("modal").classList.remove("open");
 document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")e.currentTarget.classList.remove("open")});
 
+function setStatus(id,text,ok){
+  const el=document.getElementById(id);el.textContent=text;el.className=ok?"ok":"bad";
+}
+async function checkManifest(){
+  try{
+    const res=await fetch("./manifest-v3.webmanifest?v=3.0.0",{cache:"no-store"});
+    const data=await res.json();
+    const iconsOk=Array.isArray(data.icons)&&data.icons.some(i=>i.sizes==="192x192")&&data.icons.some(i=>i.sizes==="512x512");
+    setStatus("manifestStatus",res.ok&&iconsOk?"Lastet":"Feil",res.ok&&iconsOk);
+  }catch(e){setStatus("manifestStatus","Feil",false)}
+}
 let deferredPrompt=null;
 const installBtn=document.getElementById("installBtn");
-window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();deferredPrompt=e;installBtn.classList.add("show");
-  document.getElementById("pwaStatus").textContent="Appen er klar til å installeres.";
-  document.getElementById("pwaStatus").classList.add("ok");
+window.addEventListener("beforeinstallprompt",event=>{
+  event.preventDefault();
+  deferredPrompt=event;
+  installBtn.classList.add("show");
+  document.getElementById("installHint").textContent="Chrome har godkjent appen for installasjon. Trykk «Installer app».";
 });
 installBtn.addEventListener("click",async()=>{
   if(!deferredPrompt)return;
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
-  deferredPrompt=null;installBtn.classList.remove("show");
+  deferredPrompt=null;
+  installBtn.classList.remove("show");
 });
 window.addEventListener("appinstalled",()=>{
-  document.getElementById("pwaStatus").textContent="Appen er installert.";
-  document.getElementById("pwaStatus").classList.add("ok");
+  document.getElementById("installHint").textContent="Appen er installert.";
 });
 if(window.matchMedia("(display-mode: standalone)").matches){
-  document.getElementById("pwaStatus").textContent="Appen kjører som installert PWA.";
-  document.getElementById("pwaStatus").classList.add("ok");
+  setStatus("displayStatus","Installert app",true);
+}else{
+  setStatus("displayStatus","Nettleser",false);
 }
 if("serviceWorker" in navigator){
   window.addEventListener("load",async()=>{
     try{
-      await navigator.serviceWorker.register("./service-worker.js",{scope:"./"});
-      if(!window.matchMedia("(display-mode: standalone)").matches){
-        setTimeout(()=>{
-          if(!deferredPrompt) document.getElementById("pwaStatus").textContent="Åpne siden i Chrome. Installeringsvalget kan ligge under menyen med tre prikker.";
-        },1800);
-      }
-    }catch(err){
-      document.getElementById("pwaStatus").textContent="Service worker kunne ikke registreres.";
-    }
+      const reg=await navigator.serviceWorker.register("./service-worker-v3.js?v=3.0.0",{scope:"./"});
+      await navigator.serviceWorker.ready;
+      setStatus("swStatus","Aktiv",true);
+      if(reg.waiting)reg.waiting.postMessage({type:"SKIP_WAITING"});
+    }catch(e){setStatus("swStatus","Feil",false)}
   });
+}else{
+  setStatus("swStatus","Ikke støttet",false);
 }
+checkManifest();
 render();
 </script>
 </body>
