@@ -1,31 +1,13 @@
-KVINTSIRKELEN v3.0 – PWA
+KVINTSIRKELEN v5.1 – PWA
 
-Denne versjonen bruker nye filnavn for manifest, service worker og ikoner.
-Det hindrer Chrome i å gjenbruke de gamle PWA-filene fra tidligere versjoner.
+Nytt i v5.1:
+- Egen Capo-fane.
+- Velg tonearten låten faktisk går i.
+- Velg capo-bånd og se hvilke akkordformer du skal spille.
+- Hele toneartens akkorder transponeres automatisk.
+- «Finn enkleste capo» prioriterer gitarvennlige åpne grep.
+- Du kan prøve capo 0–11 og se hvilken toneart du spiller som.
+- Kvintsirkel, CAGED og Improvisasjon fra v5.0 er beholdt.
 
-SLIK LASTER DU OPP
-
-1. Slett de gamle filene i GitHub-repositoriet, eller erstatt dem.
-2. Last opp ALT innholdet fra denne pakken.
-3. Behold mappen icons med ikonfilene inni.
-
-Filstruktur:
-
-.nojekyll
-index.html
-manifest-v3.webmanifest
-service-worker-v3.js
-icons/
-  kvintsirkelen-v3-192.png
-  kvintsirkelen-v3-512.png
-  kvintsirkelen-v3-apple.png
-
-Nettadresse:
-https://lebear79.github.io/Kvintsirkel/
-
-Etter opplasting:
-- Vent 2–3 minutter.
-- Åpne adressen direkte i Chrome.
-- Se nederst i appen under «PWA-status».
-- Manifest og Service worker skal være grønne.
-- Når Chrome godkjenner appen, vises knappen «Installer app» øverst.
+Last opp hele innholdet til GitHub og behold icons-mappen.
+Oppdater siden én gang etter publisering.

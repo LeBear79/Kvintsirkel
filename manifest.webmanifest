@@ -1,20 +1,15 @@
 {
-  "id": "/Kvintsirkel/",
+  "id": "./",
   "name": "Kvintsirkelen – akkordhjelper",
   "short_name": "Kvintsirkelen",
-  "description": "Interaktiv kvintsirkel med akkorder, akkordrekker og gitargrep.",
-  "start_url": "./?source=pwa",
+  "description": "Kvintsirkel med capo-hjelper, CAGED-system, gitargrep og backing track for improvisasjon.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "window-controls-overlay",
-    "standalone",
-    "minimal-ui"
-  ],
   "background_color": "#17120d",
   "theme_color": "#17120d",
-  "lang": "nb",
-  "orientation": "portrait",
+  "lang": "nb-NO",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "./icons/icon-192.png",
