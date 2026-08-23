@@ -152,6 +152,76 @@
     .detail-diagram svg{width:100%;max-width:480px;height:auto}
     @media(max-width:600px){.tuning-picker{grid-template-columns:1fr}.chord-chart{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+    .tunings-workspace{
+      display:grid;
+      grid-template-columns:220px minmax(420px,.9fr) minmax(420px,1.2fr);
+      gap:14px;
+      align-items:start;
+    }
+    .tuning-sidebar,.tuning-chart-panel,.tuning-detail-panel{
+      background:linear-gradient(180deg,var(--panel2),var(--panel));
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+      min-width:0;
+    }
+    .side-label{font-size:.76rem;font-weight:900;letter-spacing:.08em;color:var(--gold);text-transform:uppercase;margin:4px 0 10px}
+    .tuning-select-card{
+      width:100%;text-align:left;border:1px solid var(--line);background:#1b130e;color:var(--text);
+      border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;
+    }
+    .tuning-select-card.active{background:var(--gold);color:#1b140d;border-color:var(--gold2)}
+    .tuning-select-card strong{display:block;font-size:1rem}
+    .tuning-select-card span{display:block;font-size:.78rem;color:var(--muted);margin-top:3px}
+    .tuning-select-card.active span{color:#3a2817}
+    .side-nav{display:grid;gap:6px;margin-top:16px}
+    .side-nav button{
+      text-align:left;border:1px solid transparent;background:transparent;color:var(--text);
+      border-radius:10px;padding:10px;cursor:pointer
+    }
+    .side-nav button.active{background:#3b2918;border-color:var(--line);color:var(--gold2)}
+    .chord-group-title{font-size:.82rem;font-weight:900;letter-spacing:.06em;margin:14px 0 8px}
+    .chord-group-title.major{color:#68d08c}.chord-group-title.minor{color:#6ab3e8}
+    .compact-chart{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .compact-chord{
+      border:1px solid var(--line);background:#1b130e;color:var(--text);border-radius:12px;
+      padding:8px;cursor:pointer;min-width:0
+    }
+    .compact-chord.active{border-color:var(--gold2);box-shadow:0 0 0 2px rgba(222,179,91,.16);background:#4a3218}
+    .compact-chord h4{margin:0 0 4px;text-align:center;font-size:.94rem}
+    .compact-chord svg{display:block;width:100%;height:auto}
+    .detail-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .detail-title{font-size:2rem;font-weight:900;margin:0}
+    .detail-sub{color:var(--muted);margin-top:2px}
+    .detail-tabs{display:flex;gap:14px;border-bottom:1px solid var(--line);margin:16px 0 14px}
+    .detail-tabs button{
+      background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+      padding:9px 4px;cursor:pointer;font-weight:800
+    }
+    .detail-tabs button.active{color:var(--gold2);border-bottom-color:var(--gold)}
+    .variant-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .variant-card{
+      border:1px solid var(--line);background:#211710;color:var(--text);border-radius:13px;padding:9px;cursor:pointer
+    }
+    .variant-card.active{border-color:var(--gold2);background:#4a3218}
+    .variant-card .variant-label{font-size:.78rem;color:var(--muted);margin-bottom:3px}
+    .variant-card svg{width:100%;height:auto;display:block}
+    .tone-legend{display:flex;gap:14px;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:12px;color:var(--muted);font-size:.78rem}
+    .legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+    .root-dot{background:#2f7d4a}.third-dot{background:#deb35b}.fifth-dot{background:#2775c8}.other-dot{background:#7a4bb5}
+    .finger-help{font-size:.78rem;color:var(--muted);margin-top:12px;line-height:1.5}
+    .tab-mini{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;background:#120d09;border:1px solid var(--line);border-radius:12px;padding:12px;overflow:auto;font-size:.82rem}
+    @media(max-width:1100px){
+      .tunings-workspace{grid-template-columns:190px 1fr}
+      .tuning-detail-panel{grid-column:1/-1}
+    }
+    @media(max-width:760px){
+      .tunings-workspace{grid-template-columns:1fr}
+      .compact-chart{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .variant-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
 </style>
 </head>
 <body>
@@ -240,28 +310,68 @@
   </section>
 
   
+  
   <section id="tuningView" class="view">
-    <div class="panel">
-      <h2 class="section-title">Stemminger</h2>
-      <p class="subtitle">Velg stemming og bruk akkordkartet som et oppslagsverk. Trykk på en akkord for større diagram og tabulatur.</p>
-      <div class="tuning-picker">
-        <button class="tuning-pick active" data-tuning-pick="dadgad"><strong>DADGAD</strong><span>D–A–D–G–A–D</span></button>
-        <button class="tuning-pick" data-tuning-pick="openD"><strong>Åpen D</strong><span>D–A–D–F♯–A–D</span></button>
-      </div>
-      <div id="tuningGuide" class="tuning-guide"></div>
-      <h3 id="chartTitle" class="section-title" style="margin-top:22px">DADGAD – akkordkart</h3>
-      <div id="chordChart" class="chord-chart"></div>
-    </div>
+    <div class="tunings-workspace">
+      <aside class="tuning-sidebar">
+        <div class="side-label">Stemminger</div>
+        <button class="tuning-select-card active" data-tuning-select="dadgad">
+          <strong>DADGAD</strong><span>D–A–D–G–A–D</span>
+        </button>
+        <button class="tuning-select-card" data-tuning-select="openD">
+          <strong>Åpen D</strong><span>D–A–D–F♯–A–D</span>
+        </button>
 
-    <div id="chordDetail" class="panel chord-detail">
-      <div class="detail-head">
-        <div><h3 id="detailTitle" class="section-title">D</h3><p id="detailSubtitle" class="subtitle"></p></div>
-        <button id="closeChordDetail" class="voicing-btn">Lukk</button>
-      </div>
-      <div id="detailDiagram" class="detail-diagram"></div>
-      <h3 class="section-title">Tabulatur</h3>
-      <div id="detailTab" class="tab-box"></div>
-      <div id="detailAlternatives" class="voicing-tabs"></div>
+        <div class="side-label" style="margin-top:18px">I valgt stemming</div>
+        <div class="side-nav">
+          <button class="active" data-tuning-mode="chart">▦ Akkordkart</button>
+          <button data-tuning-mode="all">☷ Alle akkorder</button>
+        </div>
+      </aside>
+
+      <section class="tuning-chart-panel">
+        <h2 id="workspaceChartTitle" class="section-title">DADGAD – Akkordkart</h2>
+        <p id="workspaceChartSub" class="subtitle">Vanlige akkorder i DADGAD-stemming</p>
+        <div class="chord-group-title major">DUR</div>
+        <div id="majorChordChart" class="compact-chart"></div>
+        <div class="chord-group-title minor">MOLL</div>
+        <div id="minorChordChart" class="compact-chart"></div>
+      </section>
+
+      <section class="tuning-detail-panel">
+        <div class="detail-header">
+          <div>
+            <h2 id="detailChordName" class="detail-title">D</h2>
+            <div id="detailTuningName" class="detail-sub">DADGAD: D–A–D–G–A–D</div>
+          </div>
+        </div>
+
+        <div class="detail-tabs">
+          <button class="active" data-detail-tab="shapes">Grep</button>
+          <button data-detail-tab="tab">Tabulatur</button>
+          <button data-detail-tab="tones">Tonene</button>
+        </div>
+
+        <div id="detailShapesPane">
+          <h3 id="variantHeading" class="section-title">D – varianter</h3>
+          <div id="variantGrid" class="variant-grid"></div>
+          <div class="tone-legend">
+            <span><span class="legend-dot root-dot"></span>Grunntone</span>
+            <span><span class="legend-dot third-dot"></span>Ters</span>
+            <span><span class="legend-dot fifth-dot"></span>Kvint</span>
+            <span><span class="legend-dot other-dot"></span>Annen tone</span>
+          </div>
+          <div id="fingerHelp" class="finger-help"></div>
+        </div>
+
+        <div id="detailTabPane" style="display:none">
+          <div id="workspaceTab" class="tab-mini"></div>
+        </div>
+
+        <div id="detailTonesPane" style="display:none">
+          <div id="workspaceTones" class="tone-legend"></div>
+        </div>
+      </section>
     </div>
   </section>
 
@@ -515,7 +625,7 @@ document.querySelectorAll(".tab-btn").forEach(btn=>{
     document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b===btn));
     document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===btn.dataset.view));
     if(btn.dataset.view==="capoView" && typeof renderCapo==="function") renderCapo();
-    if(btn.dataset.view==="tuningView" && typeof renderChordChart==="function") renderChordChart();
+    if(btn.dataset.view==="tuningView" && typeof renderTuningWorkspace==="function") renderTuningWorkspace();
     if(btn.dataset.view==="cagedView" && typeof renderCaged==="function") renderCaged();
     if(btn.dataset.view==="jamView" && typeof renderJamInfo==="function") renderJamInfo();
   });
@@ -713,88 +823,205 @@ document.getElementById("capoChoices").addEventListener("click",e=>{
 });
 renderCapo();
 
-// ----- Stemminger / akkordkart v5.3 -----
-const altTunings={
- dadgad:{name:"DADGAD",notes:["D","A","D","G","A","D"],guide:"Fra standardstemming: E→D på 6. streng, B→A på 2. streng og E→D på 1. streng."},
- openD:{name:"Åpen D",notes:["D","A","D","F♯","A","D"],guide:"Fra standardstemming: E→D på 6. streng, G→F♯ på 3. streng, B→A på 2. streng og E→D på 1. streng. Åpne strenger gir D-dur."}
-};
-// grep er oppgitt fra 6. til 1. streng; x = dempet
-const chordLibrary={
- dadgad:{
-  "D":[[0,0,0,2,0,0],[0,0,4,2,0,0]],
-  "Dsus2":[[0,0,0,2,0,0]],
-  "Dm":[[0,0,0,2,3,0]],
-  "G":[[5,0,0,0,0,0],[5,0,0,4,0,0]],
-  "G/B":[["x",2,0,0,0,0]],
-  "A":[[7,0,0,6,0,0],[7,0,7,6,0,0]],
-  "Asus4":[[7,0,0,7,0,0]],
-  "Bm":[["x",2,4,4,0,0]],
-  "Bm7":[["x",2,4,2,0,0]],
-  "Em":[[2,2,2,0,0,0]],
-  "Em7":[[2,2,0,0,0,0]],
-  "F♯m":[[4,4,4,2,0,0]],
-  "C":[["x",3,2,0,1,0]],
-  "Cadd2":[["x",3,2,0,0,0]],
-  "Am":[["x",0,2,2,1,0]]
- },
- openD:{
-  "D":[[0,0,0,0,0,0],[12,12,12,12,12,12]],
-  "Dm":[[0,0,0,3,0,0]],
-  "E":[[2,2,2,2,2,2]],
-  "Em":[[2,2,2,3,2,2]],
-  "F♯":[[4,4,4,4,4,4]],
-  "F♯m":[[4,4,4,5,4,4]],
-  "G":[[5,5,5,5,5,5],[5,5,5,5,0,0]],
-  "A":[[7,7,7,7,7,7],[7,7,7,7,0,0]],
-  "Am":[[7,7,7,8,7,7]],
-  "B":[[9,9,9,9,9,9]],
-  "Bm":[[9,9,9,10,9,9]],
-  "C":[[10,10,10,10,10,10]]
- }
-};
-let activeAltTuning="dadgad", activeDetailChord="D", activeAltShape=0;
 
-function chordSvg(shape, notes, compact=false){
- const W=compact?170:360,H=compact?150:270,L=compact?28:60,T=compact?30:52,sg=compact?23:48,fg=compact?19:35;
- const vals=shape.filter(v=>v!=="x").map(Number), min=Math.min(...vals), max=Math.max(...vals);
- const start=min>3?Math.max(0,min-1):0, frets=5;
- let s=`<svg viewBox="0 0 ${W} ${H}">`;
- for(let i=0;i<6;i++){const x=L+i*sg;s+=`<line x1="${x}" y1="${T}" x2="${x}" y2="${T+frets*fg}" stroke="#d9c9ae" stroke-width="1.5"/>`;}
- for(let f=0;f<=frets;f++){const y=T+f*fg;s+=`<line x1="${L}" y1="${y}" x2="${L+5*sg}" y2="${y}" stroke="#d9c9ae" stroke-width="${f===0&&start===0?3:1.5}"/>`;}
- shape.forEach((v,i)=>{const x=L+i*sg;if(v==="x"){s+=`<text x="${x}" y="${T-9}" text-anchor="middle" fill="#e59b8e" font-size="${compact?10:15}">×</text>`;return}
- const f=Number(v);if(f===0){s+=`<circle cx="${x}" cy="${T-9}" r="${compact?4:7}" fill="none" stroke="#b9f3c8" stroke-width="2"/>`;return}
- const rel=f-start,y=T+(rel-.5)*fg;s+=`<circle cx="${x}" cy="${y}" r="${compact?6:11}" fill="#2f7d4a" stroke="#b9f3c8" stroke-width="1.5"/>`;});
- if(start>0)s+=`<text x="5" y="${T+16}" fill="#deb35b" font-size="${compact?9:13}">${start+1}.</text>`;
- return s+"</svg>";
+// ----- Stemminger workspace v5.5 -----
+const tuningWorkspace={
+  dadgad:{name:"DADGAD",notes:["D","A","D","G","A","D"]},
+  openD:{name:"Åpen D",notes:["D","A","D","F♯","A","D"]}
+};
+
+// DADGAD core shapes are based on the uploaded PDF.
+// Extra variation slots are supported so additional verified charts can be merged later.
+const tuningChordData={
+  dadgad:{
+    major:{
+      "C":[{shape:["x",3,2,0,3,"x"],fingers:"2–1–3"}],
+      "D":[
+        {shape:[0,0,4,2,0,0],fingers:"4–1"},
+        {shape:[0,0,0,2,0,0],fingers:"1"},
+        {shape:[0,0,0,2,0,2],fingers:"1–2"}
+      ],
+      "E":[{shape:["x","x",2,1,2,2],fingers:"2–1–3–4"}],
+      "F":[{shape:["x","x",3,2,3,3],fingers:"2–1–3–4"}],
+      "G":[
+        {shape:[0,2,0,0,2,0],fingers:"2–3"},
+        {shape:[5,0,0,0,0,0],fingers:"1"}
+      ],
+      "A":[
+        {shape:["x",0,2,2,4,"x"],fingers:"1–2–4"},
+        {shape:[7,0,0,6,0,0],fingers:"1–2"}
+      ]
+    },
+    minor:{
+      "Am":[{shape:["x",0,2,2,3,"x"],fingers:"1–2–4"}],
+      "Dm":[
+        {shape:[0,0,3,2,0,0],fingers:"2–3"},
+        {shape:[0,0,0,2,3,0],fingers:"1–2"}
+      ],
+      "Em":[{shape:["x","x",2,0,2,2],fingers:"2–3–4"}],
+      "Bm":[{shape:["x","x","x",4,5,4],fingers:"1–3–2"}],
+      "F♯m":[{shape:["x","x",4,2,4,4],fingers:"2–1–3–4"}],
+      "C♯m":[{shape:["x",4,2,1,"x","x"],fingers:"4–2–1"}]
+    }
+  },
+  openD:{
+    major:{
+      "D":[
+        {shape:[0,0,0,0,0,0],fingers:"åpent"},
+        {shape:[12,12,12,12,12,12],fingers:"barré"}
+      ],
+      "E":[{shape:[2,2,2,2,2,2],fingers:"barré"}],
+      "F♯":[{shape:[4,4,4,4,4,4],fingers:"barré"}],
+      "G":[{shape:[5,5,5,5,5,5],fingers:"barré"}],
+      "A":[{shape:[7,7,7,7,7,7],fingers:"barré"}],
+      "B":[{shape:[9,9,9,9,9,9],fingers:"barré"}],
+      "C":[{shape:[10,10,10,10,10,10],fingers:"barré"}]
+    },
+    minor:{
+      "Dm":[{shape:[0,0,0,3,0,0],fingers:"1"}],
+      "Em":[{shape:[2,2,2,3,2,2],fingers:"barré + 2"}],
+      "F♯m":[{shape:[4,4,4,5,4,4],fingers:"barré + 2"}],
+      "Am":[{shape:[7,7,7,8,7,7],fingers:"barré + 2"}],
+      "Bm":[{shape:[9,9,9,10,9,9],fingers:"barré + 2"}]
+    }
+  }
+};
+
+let wsTuning="dadgad";
+let wsChord="D";
+let wsVariant=0;
+let wsDetailTab="shapes";
+
+const pitchClassMap={"C":0,"C♯":1,"D♭":1,"D":2,"D♯":3,"E♭":3,"E":4,"F":5,"F♯":6,"G♭":6,"G":7,"G♯":8,"A♭":8,"A":9,"A♯":10,"B♭":10,"B":11};
+const tuningOpenPcs={dadgad:[2,9,2,7,9,2],openD:[2,9,2,6,9,2]};
+
+function chordRootName(name){return name.replace("dim","").replace("m","").split("/")[0]}
+function chordQuality(name){return name.endsWith("m")?"minor":"major"}
+function chordIntervals(name){return chordQuality(name)==="minor"?[0,3,7]:[0,4,7]}
+
+function chordToneRoles(chord,shape){
+  const root=pitchClassMap[chordRootName(chord)];
+  const ints=chordIntervals(chord);
+  const opens=tuningOpenPcs[wsTuning];
+  return shape.map((f,i)=>{
+    if(f==="x")return "muted";
+    const pc=(opens[i]+Number(f))%12;
+    const rel=(pc-root+12)%12;
+    if(rel===0)return "root";
+    if(rel===ints[1])return "third";
+    if(rel===7)return "fifth";
+    return "other";
+  });
 }
-function chordTab(shape,notes){
- return [...Array(6).keys()].reverse().map(i=>`${notes[i]} |---${String(shape[i]).padStart(2,"-")}---|`).join("\n");
+
+function miniChordSvg(chord,shape,compact=true){
+  const W=compact?150:300,H=compact?135:260,L=compact?24:48,T=compact?28:48,sg=compact?20:40,fg=compact?18:34;
+  const vals=shape.filter(v=>v!=="x").map(Number);
+  const min=Math.min(...vals),max=Math.max(...vals);
+  const start=min>3?Math.max(0,min-1):0, frets=5;
+  const roles=chordToneRoles(chord,shape);
+  const roleColor={root:"#2f7d4a",third:"#deb35b",fifth:"#2775c8",other:"#7a4bb5"};
+  let s=`<svg viewBox="0 0 ${W} ${H}" aria-label="Grep for ${chord}">`;
+  for(let i=0;i<6;i++){const x=L+i*sg;s+=`<line x1="${x}" y1="${T}" x2="${x}" y2="${T+frets*fg}" stroke="#d9c9ae" stroke-width="${compact?1:1.5}"/>`;}
+  for(let f=0;f<=frets;f++){const y=T+f*fg;s+=`<line x1="${L}" y1="${y}" x2="${L+5*sg}" y2="${y}" stroke="#d9c9ae" stroke-width="${f===0&&start===0?(compact?2.5:4):(compact?1:1.5)}"/>`;}
+  shape.forEach((v,i)=>{
+    const x=L+i*sg;
+    if(v==="x"){s+=`<text x="${x}" y="${T-8}" text-anchor="middle" fill="#e59b8e" font-size="${compact?9:14}">×</text>`;return}
+    const f=Number(v);
+    if(f===0){s+=`<circle cx="${x}" cy="${T-8}" r="${compact?4:6}" fill="none" stroke="#f0e5d2" stroke-width="1.5"/>`;return}
+    const rel=f-start,y=T+(rel-.5)*fg,col=roleColor[roles[i]]||"#7a4bb5";
+    s+=`<circle cx="${x}" cy="${y}" r="${compact?6:10}" fill="${col}" stroke="#f0e5d2" stroke-width="1"/>`;
+  });
+  if(start>0)s+=`<text x="4" y="${T+15}" fill="#deb35b" font-size="${compact?8:12}">${start+1}.</text>`;
+  return s+"</svg>";
 }
-function renderChordChart(){
- const def=altTunings[activeAltTuning], lib=chordLibrary[activeAltTuning];
- document.getElementById("chartTitle").textContent=`${def.name} – akkordkart`;
- document.getElementById("tuningGuide").innerHTML=`<strong>${def.notes.join("–")}</strong><br>${def.guide}`;
- document.querySelectorAll("[data-tuning-pick]").forEach(b=>b.classList.toggle("active",b.dataset.tuningPick===activeAltTuning));
- document.getElementById("chordChart").innerHTML=Object.entries(lib).map(([name,shapes])=>`
-   <button class="chart-card" data-chart-chord="${name}"><h4>${name}</h4>${chordSvg(shapes[0],def.notes,true)}</button>`).join("");
+
+function tabText(shape){
+  const notes=tuningWorkspace[wsTuning].notes;
+  return [...Array(6).keys()].reverse().map(i=>`${notes[i]} |---${String(shape[i]).padStart(2,"-")}---|`).join("\n");
 }
-function openChordDetail(name,shapeIndex=0){
- const def=altTunings[activeAltTuning], shapes=chordLibrary[activeAltTuning][name];
- activeDetailChord=name;activeAltShape=Math.min(shapeIndex,shapes.length-1);
- const shape=shapes[activeAltShape];
- document.getElementById("detailTitle").textContent=`${name} · ${def.name}`;
- document.getElementById("detailSubtitle").textContent="Grep fra 6. streng til 1. streng: "+shape.join(" – ");
- document.getElementById("detailDiagram").innerHTML=chordSvg(shape,def.notes,false);
- document.getElementById("detailTab").textContent=chordTab(shape,def.notes);
- document.getElementById("detailAlternatives").innerHTML=shapes.length>1?shapes.map((_,i)=>`<button class="voicing-btn ${i===activeAltShape?"active":""}" data-alt-shape="${i}">Grep ${i+1}</button>`).join(""):"";
- document.getElementById("chordDetail").classList.add("open");
- document.getElementById("chordDetail").scrollIntoView({behavior:"smooth",block:"start"});
+
+function availableChord(name){
+  const data=tuningChordData[wsTuning];
+  return data.major[name]||data.minor[name]||null;
 }
-document.querySelectorAll("[data-tuning-pick]").forEach(b=>b.addEventListener("click",()=>{activeAltTuning=b.dataset.tuningPick;document.getElementById("chordDetail").classList.remove("open");renderChordChart();}));
-document.getElementById("chordChart").addEventListener("click",e=>{const b=e.target.closest("[data-chart-chord]");if(b)openChordDetail(b.dataset.chartChord)});
-document.getElementById("detailAlternatives").addEventListener("click",e=>{const b=e.target.closest("[data-alt-shape]");if(b)openChordDetail(activeDetailChord,Number(b.dataset.altShape))});
-document.getElementById("closeChordDetail").addEventListener("click",()=>document.getElementById("chordDetail").classList.remove("open"));
-renderChordChart();
+
+function renderWorkspaceCharts(){
+  const data=tuningChordData[wsTuning];
+  document.getElementById("workspaceChartTitle").textContent=`${tuningWorkspace[wsTuning].name} – Akkordkart`;
+  document.getElementById("workspaceChartSub").textContent=`Vanlige akkorder i ${tuningWorkspace[wsTuning].name}-stemming`;
+
+  function cards(group){
+    return Object.entries(group).map(([name,variants])=>`
+      <button class="compact-chord ${name===wsChord?"active":""}" data-ws-chord="${name}">
+        <h4>${name}</h4>${miniChordSvg(name,variants[0].shape,true)}
+      </button>`).join("");
+  }
+  document.getElementById("majorChordChart").innerHTML=cards(data.major);
+  document.getElementById("minorChordChart").innerHTML=cards(data.minor);
+}
+
+function renderWorkspaceDetail(){
+  let variants=availableChord(wsChord);
+  if(!variants){
+    wsChord=Object.keys(tuningChordData[wsTuning].major)[0];
+    variants=availableChord(wsChord);
+  }
+  if(wsVariant>=variants.length)wsVariant=0;
+  const current=variants[wsVariant];
+
+  document.getElementById("detailChordName").textContent=`${wsChord}`;
+  document.getElementById("detailTuningName").textContent=`${tuningWorkspace[wsTuning].name}: ${tuningWorkspace[wsTuning].notes.join("–")}`;
+  document.getElementById("variantHeading").textContent=`${wsChord} – varianter (${variants.length})`;
+  document.getElementById("variantGrid").innerHTML=variants.map((v,i)=>`
+    <button class="variant-card ${i===wsVariant?"active":""}" data-ws-variant="${i}">
+      <div class="variant-label">${i+1}${v.fingers?` · ${v.fingers}`:""}</div>
+      ${miniChordSvg(wsChord,v.shape,true)}
+    </button>`).join("");
+
+  document.getElementById("fingerHelp").textContent=
+    current.fingers ? `Fingerforslag: ${current.fingers}. Tallene viser fingerrekkefølge der kilden oppgir dette.` : "";
+
+  document.getElementById("workspaceTab").textContent=tabText(current.shape);
+
+  const roles=chordToneRoles(wsChord,current.shape);
+  const root=chordRootName(wsChord);
+  document.getElementById("workspaceTones").innerHTML=
+    `<span><span class="legend-dot root-dot"></span>Grunntone: ${root}</span>
+     <span><span class="legend-dot third-dot"></span>${chordQuality(wsChord)==="minor"?"Liten ters":"Stor ters"}</span>
+     <span><span class="legend-dot fifth-dot"></span>Kvint</span>`;
+
+  document.getElementById("detailShapesPane").style.display=wsDetailTab==="shapes"?"block":"none";
+  document.getElementById("detailTabPane").style.display=wsDetailTab==="tab"?"block":"none";
+  document.getElementById("detailTonesPane").style.display=wsDetailTab==="tones"?"block":"none";
+  document.querySelectorAll("[data-detail-tab]").forEach(b=>b.classList.toggle("active",b.dataset.detailTab===wsDetailTab));
+}
+
+function renderTuningWorkspace(){
+  document.querySelectorAll("[data-tuning-select]").forEach(b=>b.classList.toggle("active",b.dataset.tuningSelect===wsTuning));
+  renderWorkspaceCharts();
+  renderWorkspaceDetail();
+}
+
+document.querySelectorAll("[data-tuning-select]").forEach(btn=>btn.addEventListener("click",()=>{
+  wsTuning=btn.dataset.tuningSelect;
+  wsVariant=0;
+  wsChord=Object.keys(tuningChordData[wsTuning].major)[0];
+  renderTuningWorkspace();
+}));
+document.getElementById("majorChordChart").addEventListener("click",e=>{
+  const b=e.target.closest("[data-ws-chord]");if(!b)return;wsChord=b.dataset.wsChord;wsVariant=0;renderTuningWorkspace();
+});
+document.getElementById("minorChordChart").addEventListener("click",e=>{
+  const b=e.target.closest("[data-ws-chord]");if(!b)return;wsChord=b.dataset.wsChord;wsVariant=0;renderTuningWorkspace();
+});
+document.getElementById("variantGrid").addEventListener("click",e=>{
+  const b=e.target.closest("[data-ws-variant]");if(!b)return;wsVariant=Number(b.dataset.wsVariant);renderWorkspaceDetail();
+});
+document.querySelectorAll("[data-detail-tab]").forEach(btn=>btn.addEventListener("click",()=>{
+  wsDetailTab=btn.dataset.detailTab;renderWorkspaceDetail();
+}));
+renderTuningWorkspace();
 
 checkManifest();
 render();

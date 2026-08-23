@@ -1,12 +1,19 @@
-KVINTSIRKELEN v5.3.3
+KVINTSIRKELEN v5.5 – NY STEMMINGER-VISNING
 
-Rettet versjon etter ny gjennomgang.
-- Kvintsirkelen beholdt.
-- Fanene Kvintsirkel, Capo, Stemminger, CAGED og Improvisasjon finnes.
-- Stemminger har DADGAD og Åpen D.
-- Akkordkart og detaljvisning med tablatur er med.
-- Fanekoden er gjort mer robust mot JavaScript-rekkefølgefeil.
-- JavaScript er syntakskontrollert.
-- Cache: v5.3.3.
+Nytt:
+- Ny arbeidsflate inspirert av skissen:
+  venstre = valg av stemming
+  midten = akkordkart
+  høyre = detaljvisning
+- DADGAD og Åpen D.
+- Trykk på en akkord for å se variasjoner.
+- Varianter vises som egne akkordkort.
+- Egen fane for grep, tabulatur og toner.
+- Fargekoder for grunntone, ters, kvint og andre toner.
+- DADGAD-grunnkartet beholder de PDF-baserte grepene.
+- Flere variasjoner kan suppleres senere fra de nye akkordoversiktene.
+- Kvintsirkel, Capo, CAGED og Improvisasjon er beholdt.
+- Cache: v5.5.0
+- JavaScript syntakskontrollert.
 
-Last opp hele innholdet i denne pakken til GitHub og erstatt de eksisterende filene.
+Last opp hele innholdet til GitHub.
