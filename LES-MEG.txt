@@ -1,13 +1,7 @@
-KVINTSIRKELEN v5.1 – PWA
+Kvintsirkelen v5.2
 
-Nytt i v5.1:
-- Egen Capo-fane.
-- Velg tonearten låten faktisk går i.
-- Velg capo-bånd og se hvilke akkordformer du skal spille.
-- Hele toneartens akkorder transponeres automatisk.
-- «Finn enkleste capo» prioriterer gitarvennlige åpne grep.
-- Du kan prøve capo 0–11 og se hvilken toneart du spiller som.
-- Kvintsirkel, CAGED og Improvisasjon fra v5.0 er beholdt.
+Ny Stemming-fane med DADGAD og Åpen D, akkordforslag, diagram og tablatur. Resten av v5.1 er beholdt. Last opp hele innholdet til GitHub og oppdater siden etter publisering.
 
-Last opp hele innholdet til GitHub og behold icons-mappen.
-Oppdater siden én gang etter publisering.
+RETTELSE v5.2.1
+- Rettet en JavaScript-feil i Åpen D-dataene som gjorde at hele skriptet stoppet.
+- Kvintsirkelen og faneknappene fungerer igjen.
