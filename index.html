@@ -137,7 +137,22 @@
 
 
 .tuning-layout{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(330px,1.2fr);gap:18px}.tuning-strings{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:14px 0}.tuning-string{padding:12px 5px;text-align:center;border:1px solid var(--line);border-radius:12px;background:#1b130e}.tuning-string strong{display:block;font-size:1.25rem;color:var(--gold)}.tuning-chords,.voicing-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tuning-chord,.voicing-btn{border:1px solid var(--line);background:#1b130e;color:var(--text);border-radius:12px;padding:10px 13px;font-weight:800;cursor:pointer}.tuning-chord.active{background:#2f7d4a;border-color:#b9f3c8}.voicing-btn.active{background:var(--gold);color:#1b140d}.tab-box{font-family:monospace;white-space:pre;overflow-x:auto;background:#120d09;border:1px solid var(--line);border-radius:14px;padding:14px;line-height:1.65}.tuning-diagram svg{width:100%;max-width:420px;height:auto}.tuning-note{padding:10px 12px;border-left:3px solid var(--gold);background:#1b130e;border-radius:0 12px 12px 0;color:var(--muted);margin-top:12px}@media(max-width:790px){.tuning-layout{grid-template-columns:1fr}.tuning-strings{grid-template-columns:repeat(3,1fr)}}
-  </style>
+  
+    .tuning-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+    .tuning-pick{padding:16px;border-radius:16px;border:1px solid var(--line);background:#1b130e;color:var(--text);text-align:left;cursor:pointer}
+    .tuning-pick strong{display:block;font-size:1.2rem}.tuning-pick span{display:block;color:var(--muted);margin-top:5px}
+    .tuning-pick.active{background:var(--gold);color:#1b140d;border-color:var(--gold2)} .tuning-pick.active span{color:#382710}
+    .tuning-guide{padding:12px 14px;border-radius:14px;background:#1b130e;border:1px solid var(--line);color:var(--muted)}
+    .chord-chart{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
+    .chart-card{background:#1b130e;border:1px solid var(--line);border-radius:15px;padding:10px;cursor:pointer;color:var(--text)}
+    .chart-card:hover{border-color:var(--gold)} .chart-card h4{margin:0 0 5px;font-size:1.05rem;text-align:center}
+    .chart-card svg{width:100%;height:auto;display:block}
+    .chord-detail{display:none;margin-top:18px}.chord-detail.open{display:block}
+    .detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .detail-diagram svg{width:100%;max-width:480px;height:auto}
+    @media(max-width:600px){.tuning-picker{grid-template-columns:1fr}.chord-chart{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -152,7 +167,7 @@
   <nav class="tabs" aria-label="Appseksjoner">
     <button class="tab-btn active" data-view="circleView">Kvintsirkel</button>
     <button class="tab-btn" data-view="capoView">Capo</button>
-    <button class="tab-btn" data-view="tuningView">Stemming</button>
+    <button class="tab-btn" data-view="tuningView">Stemminger</button>
     <button class="tab-btn" data-view="cagedView">CAGED</button>
     <button class="tab-btn" data-view="jamView">Improvisasjon</button>
   </nav>
@@ -224,7 +239,32 @@
     </div>
   </section>
 
-  <section id="tuningView" class="view"><div class="tuning-layout"><div class="panel"><h2 class="section-title">Alternative stemminger</h2><p class="subtitle">Velg DADGAD eller Åpen D og få forslag til grep med diagram og tablatur.</p><div class="jam-controls"><label>Stemming<select id="altTuning"><option value="dadgad">DADGAD</option><option value="openD">Åpen D</option></select></label><label>Toneart<select id="tuningKey"><option>C</option><option>D</option><option>E</option><option>F</option><option selected>G</option><option>A</option><option>B♭</option><option>B</option></select></label></div><div id="tuningStrings" class="tuning-strings"></div><div id="tuningInfo" class="tuning-note"></div><h3 class="section-title" style="margin-top:20px">Akkorder i tonearten</h3><div id="tuningChords" class="tuning-chords"></div></div><div class="panel"><h3 id="tuningChordTitle" class="section-title">G</h3><div id="voicingTabs" class="voicing-tabs"></div><div id="tuningDiagram" class="tuning-diagram"></div><h3 class="section-title" style="margin-top:18px">Tabulatur</h3><div id="tuningTab" class="tab-box"></div><p id="tuningTip" class="subtitle" style="margin-top:12px"></p></div></div></section>
+  
+  <section id="tuningView" class="view">
+    <div class="panel">
+      <h2 class="section-title">Stemminger</h2>
+      <p class="subtitle">Velg stemming og bruk akkordkartet som et oppslagsverk. Trykk på en akkord for større diagram og tabulatur.</p>
+      <div class="tuning-picker">
+        <button class="tuning-pick active" data-tuning-pick="dadgad"><strong>DADGAD</strong><span>D–A–D–G–A–D</span></button>
+        <button class="tuning-pick" data-tuning-pick="openD"><strong>Åpen D</strong><span>D–A–D–F♯–A–D</span></button>
+      </div>
+      <div id="tuningGuide" class="tuning-guide"></div>
+      <h3 id="chartTitle" class="section-title" style="margin-top:22px">DADGAD – akkordkart</h3>
+      <div id="chordChart" class="chord-chart"></div>
+    </div>
+
+    <div id="chordDetail" class="panel chord-detail">
+      <div class="detail-head">
+        <div><h3 id="detailTitle" class="section-title">D</h3><p id="detailSubtitle" class="subtitle"></p></div>
+        <button id="closeChordDetail" class="voicing-btn">Lukk</button>
+      </div>
+      <div id="detailDiagram" class="detail-diagram"></div>
+      <h3 class="section-title">Tabulatur</h3>
+      <div id="detailTab" class="tab-box"></div>
+      <div id="detailAlternatives" class="voicing-tabs"></div>
+    </div>
+  </section>
+
 <section id="cagedView" class="view">
     <div class="caged-layout">
       <div class="panel">
@@ -682,6 +722,90 @@ function diagram(shape,notes){let W=360,H=250,l=60,t=48,sg=48,fg=34,nums=shape.f
 function tab(shape,notes){return [...Array(6).keys()].reverse().map(i=>`${notes[i]} |---${String(shape[i]).padStart(2,"-")}---|`).join("\n")}
 function renderTuning(){let tid=document.getElementById("altTuning").value,key=document.getElementById("tuningKey").value,d=tuningDefs[tid],chs=(keyData[key]||[key]).slice(0,7);if(!chs.includes(selectedTuningChord))selectedTuningChord=chs[0];document.getElementById("tuningStrings").innerHTML=d.notes.map((n,i)=>`<div class="tuning-string"><small>${6-i}. streng</small><strong>${n}</strong></div>`).join("");document.getElementById("tuningInfo").textContent=d.info;document.getElementById("tuningChords").innerHTML=chs.map(c=>`<button class="tuning-chord ${c===selectedTuningChord?"active":""}" data-tuning-chord="${c}">${c}</button>`).join("");let vs=(tuningShapes[tid][selectedTuningChord]||[fallbackShape(tid,selectedTuningChord)]);if(selectedVoicing>=vs.length)selectedVoicing=0;document.getElementById("voicingTabs").innerHTML=vs.map((_,i)=>`<button class="voicing-btn ${i===selectedVoicing?"active":""}" data-voicing="${i}">Forslag ${i+1}</button>`).join("");let sh=vs[selectedVoicing];document.getElementById("tuningChordTitle").textContent=`${selectedTuningChord} · ${d.name}`;document.getElementById("tuningDiagram").innerHTML=diagram(sh,[...d.notes].reverse());document.getElementById("tuningTab").textContent=tab(sh,d.notes);document.getElementById("tuningTip").textContent=tid==="openD"?"Åpen D egner seg godt til flyttbare grep. La åpne strenger ringe når de passer.":"DADGAD får mye av klangen fra åpne D- og A-strenger. Bruk forslagene som utgangspunkt og lytt."}
 document.getElementById("altTuning").addEventListener("change",()=>{selectedVoicing=0;renderTuning()});document.getElementById("tuningKey").addEventListener("change",()=>{selectedVoicing=0;renderTuning()});document.getElementById("tuningChords").addEventListener("click",e=>{let b=e.target.closest("[data-tuning-chord]");if(b){selectedTuningChord=b.dataset.tuningChord;selectedVoicing=0;renderTuning()}});document.getElementById("voicingTabs").addEventListener("click",e=>{let b=e.target.closest("[data-voicing]");if(b){selectedVoicing=Number(b.dataset.voicing);renderTuning()}});renderTuning();
+
+
+// ----- Stemminger / akkordkart v5.3 -----
+const altTunings={
+ dadgad:{name:"DADGAD",notes:["D","A","D","G","A","D"],guide:"Fra standardstemming: E→D på 6. streng, B→A på 2. streng og E→D på 1. streng."},
+ openD:{name:"Åpen D",notes:["D","A","D","F♯","A","D"],guide:"Fra standardstemming: E→D på 6. streng, G→F♯ på 3. streng, B→A på 2. streng og E→D på 1. streng. Åpne strenger gir D-dur."}
+};
+// grep er oppgitt fra 6. til 1. streng; x = dempet
+const chordLibrary={
+ dadgad:{
+  "D":[[0,0,0,2,0,0],[0,0,4,2,0,0]],
+  "Dsus2":[[0,0,0,2,0,0]],
+  "Dm":[[0,0,0,2,3,0]],
+  "G":[[5,0,0,0,0,0],[5,0,0,4,0,0]],
+  "G/B":[["x",2,0,0,0,0]],
+  "A":[[7,0,0,6,0,0],[7,0,7,6,0,0]],
+  "Asus4":[[7,0,0,7,0,0]],
+  "Bm":[["x",2,4,4,0,0]],
+  "Bm7":[["x",2,4,2,0,0]],
+  "Em":[[2,2,2,0,0,0]],
+  "Em7":[[2,2,0,0,0,0]],
+  "F♯m":[[4,4,4,2,0,0]],
+  "C":[["x",3,2,0,1,0]],
+  "Cadd2":[["x",3,2,0,0,0]],
+  "Am":[["x",0,2,2,1,0]]
+ },
+ openD:{
+  "D":[[0,0,0,0,0,0],[12,12,12,12,12,12]],
+  "Dm":[[0,0,0,3,0,0]],
+  "E":[[2,2,2,2,2,2]],
+  "Em":[[2,2,2,3,2,2]],
+  "F♯":[[4,4,4,4,4,4]],
+  "F♯m":[[4,4,4,5,4,4]],
+  "G":[[5,5,5,5,5,5],[5,5,5,5,0,0]],
+  "A":[[7,7,7,7,7,7],[7,7,7,7,0,0]],
+  "Am":[[7,7,7,8,7,7]],
+  "B":[[9,9,9,9,9,9]],
+  "Bm":[[9,9,9,10,9,9]],
+  "C":[[10,10,10,10,10,10]]
+ }
+};
+let activeAltTuning="dadgad", activeDetailChord="D", activeAltShape=0;
+
+function chordSvg(shape, notes, compact=false){
+ const W=compact?170:360,H=compact?150:270,L=compact?28:60,T=compact?30:52,sg=compact?23:48,fg=compact?19:35;
+ const vals=shape.filter(v=>v!=="x").map(Number), min=Math.min(...vals), max=Math.max(...vals);
+ const start=min>3?Math.max(0,min-1):0, frets=5;
+ let s=`<svg viewBox="0 0 ${W} ${H}">`;
+ for(let i=0;i<6;i++){const x=L+i*sg;s+=`<line x1="${x}" y1="${T}" x2="${x}" y2="${T+frets*fg}" stroke="#d9c9ae" stroke-width="1.5"/>`;}
+ for(let f=0;f<=frets;f++){const y=T+f*fg;s+=`<line x1="${L}" y1="${y}" x2="${L+5*sg}" y2="${y}" stroke="#d9c9ae" stroke-width="${f===0&&start===0?3:1.5}"/>`;}
+ shape.forEach((v,i)=>{const x=L+i*sg;if(v==="x"){s+=`<text x="${x}" y="${T-9}" text-anchor="middle" fill="#e59b8e" font-size="${compact?10:15}">×</text>`;return}
+ const f=Number(v);if(f===0){s+=`<circle cx="${x}" cy="${T-9}" r="${compact?4:7}" fill="none" stroke="#b9f3c8" stroke-width="2"/>`;return}
+ const rel=f-start,y=T+(rel-.5)*fg;s+=`<circle cx="${x}" cy="${y}" r="${compact?6:11}" fill="#2f7d4a" stroke="#b9f3c8" stroke-width="1.5"/>`;});
+ if(start>0)s+=`<text x="5" y="${T+16}" fill="#deb35b" font-size="${compact?9:13}">${start+1}.</text>`;
+ return s+"</svg>";
+}
+function chordTab(shape,notes){
+ return [...Array(6).keys()].reverse().map(i=>`${notes[i]} |---${String(shape[i]).padStart(2,"-")}---|`).join("\n");
+}
+function renderChordChart(){
+ const def=altTunings[activeAltTuning], lib=chordLibrary[activeAltTuning];
+ document.getElementById("chartTitle").textContent=`${def.name} – akkordkart`;
+ document.getElementById("tuningGuide").innerHTML=`<strong>${def.notes.join("–")}</strong><br>${def.guide}`;
+ document.querySelectorAll("[data-tuning-pick]").forEach(b=>b.classList.toggle("active",b.dataset.tuningPick===activeAltTuning));
+ document.getElementById("chordChart").innerHTML=Object.entries(lib).map(([name,shapes])=>`
+   <button class="chart-card" data-chart-chord="${name}"><h4>${name}</h4>${chordSvg(shapes[0],def.notes,true)}</button>`).join("");
+}
+function openChordDetail(name,shapeIndex=0){
+ const def=altTunings[activeAltTuning], shapes=chordLibrary[activeAltTuning][name];
+ activeDetailChord=name;activeAltShape=Math.min(shapeIndex,shapes.length-1);
+ const shape=shapes[activeAltShape];
+ document.getElementById("detailTitle").textContent=`${name} · ${def.name}`;
+ document.getElementById("detailSubtitle").textContent="Grep fra 6. streng til 1. streng: "+shape.join(" – ");
+ document.getElementById("detailDiagram").innerHTML=chordSvg(shape,def.notes,false);
+ document.getElementById("detailTab").textContent=chordTab(shape,def.notes);
+ document.getElementById("detailAlternatives").innerHTML=shapes.length>1?shapes.map((_,i)=>`<button class="voicing-btn ${i===activeAltShape?"active":""}" data-alt-shape="${i}">Grep ${i+1}</button>`).join(""):"";
+ document.getElementById("chordDetail").classList.add("open");
+ document.getElementById("chordDetail").scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.querySelectorAll("[data-tuning-pick]").forEach(b=>b.addEventListener("click",()=>{activeAltTuning=b.dataset.tuningPick;document.getElementById("chordDetail").classList.remove("open");renderChordChart();}));
+document.getElementById("chordChart").addEventListener("click",e=>{const b=e.target.closest("[data-chart-chord]");if(b)openChordDetail(b.dataset.chartChord)});
+document.getElementById("detailAlternatives").addEventListener("click",e=>{const b=e.target.closest("[data-alt-shape]");if(b)openChordDetail(activeDetailChord,Number(b.dataset.altShape))});
+document.getElementById("closeChordDetail").addEventListener("click",()=>document.getElementById("chordDetail").classList.remove("open"));
+renderChordChart();
 
 checkManifest();
 render();

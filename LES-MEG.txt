@@ -1,7 +1,12 @@
-Kvintsirkelen v5.2
+KVINTSIRKELEN v5.3 – PWA
 
-Ny Stemming-fane med DADGAD og Åpen D, akkordforslag, diagram og tablatur. Resten av v5.1 er beholdt. Last opp hele innholdet til GitHub og oppdater siden etter publisering.
+Nytt:
+- Fanen heter nå «Stemminger».
+- Velg mellom DADGAD og Åpen D.
+- Hver stemming har et visuelt akkordkart med mange grep på én skjerm.
+- Trykk på et akkordkort for større diagram og tabulatur.
+- Alternative grep vises når de finnes.
+- Kvintsirkel, Capo, CAGED og Improvisasjon er beholdt.
+- Cache er oppdatert til v5.3.0.
 
-RETTELSE v5.2.1
-- Rettet en JavaScript-feil i Åpen D-dataene som gjorde at hele skriptet stoppet.
-- Kvintsirkelen og faneknappene fungerer igjen.
+Last opp hele innholdet til GitHub.
