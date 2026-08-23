@@ -1,15 +1,12 @@
-KVINTSIRKELEN v5.3.1 – RETTET
+KVINTSIRKELEN v5.3.3
 
-Rettet:
-- En eldre kodeblokk inneholdt fortsatt en ugyldig F♯-nøkkel.
-- Feilen stoppet hele JavaScript-filen, slik at både kvintsirkelen og knappene sluttet å virke.
-- JavaScript-filen er nå syntakskontrollert før denne pakken ble laget.
-- Cache-versjonen er økt til v5.3.1.
+Rettet versjon etter ny gjennomgang.
+- Kvintsirkelen beholdt.
+- Fanene Kvintsirkel, Capo, Stemminger, CAGED og Improvisasjon finnes.
+- Stemminger har DADGAD og Åpen D.
+- Akkordkart og detaljvisning med tablatur er med.
+- Fanekoden er gjort mer robust mot JavaScript-rekkefølgefeil.
+- JavaScript er syntakskontrollert.
+- Cache: v5.3.3.
 
-Nytt fra v5.3 er beholdt:
-- Stemminger
-- DADGAD
-- Åpen D
-- Visuelt akkordkart
-- Større akkorddiagram og tablatur ved trykk
-- Kvintsirkel, Capo, CAGED og Improvisasjon
+Last opp hele innholdet i denne pakken til GitHub og erstatt de eksisterende filene.
